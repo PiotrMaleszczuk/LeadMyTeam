@@ -1,6 +1,10 @@
 package leadmyteam;
 
+import javax.swing.JButton;
+
 public class Pracownik implements Comparable<Pracownik>{
+    
+    public int dlugosc = 11;
     
     private final String pesel;
     private final String imie;
@@ -52,6 +56,10 @@ public class Pracownik implements Comparable<Pracownik>{
     
     public String PobierzNazwisko(){
         return nazwisko;
+    }
+    
+    public String PobierzImie(){
+        return imie;
     }
     
     public String PobierzPesel(){

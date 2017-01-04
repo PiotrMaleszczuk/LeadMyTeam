@@ -11,23 +11,34 @@ public class SqlConnection {
     Connection conn = null;
     Statement stmt = null;
     ResultSet rs = null;
-    
+
     private ZmienDanePracownikaSQL_Query zmienDanePracownikaSQL_Query = new ZmienDanePracownikaSQL_Query();
     public List<Pracownik> Pracownicy;
+    public List<Urlop> Urlopy;
 
     String connectionUrl = "jdbc:sqlserver://localhost:1433;"
             + "databaseName=LeadMyTeam;user=LeadMyTeam;password=leadmyteam;integratedSecurity=true";
 
     public SqlConnection() {
         Pracownicy = new ArrayList<>();
+        Urlopy = new ArrayList<>();
         Connect();
     }
 
     public Object[][] PobierzPracownikow() {
-        Object[][] dane = new Object[Pracownicy.size()][Pracownicy.get(0).PobierzDane().length()];
+        Object[][] dane = new Object[Pracownicy.size()][Pracownicy.get(0).dlugosc];
 
         for (int i = 0; i < Pracownicy.size(); i++) {
             dane[i] = Pracownicy.get(i).PobierzObiekt();
+        }
+        return dane;
+    }
+
+    public Object[][] PobierzUrlopy() {
+        Object[][] dane = new Object[Urlopy.size()][Urlopy.get(0).dlugosc];
+
+        for (int i = 0; i < Urlopy.size(); i++) {
+            dane[i] = Urlopy.get(i).PobierzObiekt();
         }
         return dane;
     }
@@ -43,6 +54,8 @@ public class SqlConnection {
         }
     }
 
+    //FUNKCJE ODPOWIEDZIALNE ZA PRACOWNIKOW
+    // <editor-fold defaultstate="collapsed" desc="Funkcje Pracownika">
     public void Sort1() {
         for (int i = 0; i < Pracownicy.size(); i++) {
             for (int j = 1; j < Pracownicy.size() - i; j++) {
@@ -131,7 +144,7 @@ public class SqlConnection {
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-        
+
         addEarningsIntoDatabase(stawkaGodzinowa, idStanowisko, idEtatu);
     }
 
@@ -146,21 +159,21 @@ public class SqlConnection {
             ex.printStackTrace();
         }
     }
-    
+
     public void ZmienDanePracownika(
-        int KtoraKolumna,
-        String pesel,
-        String imie,
-        String nazwisko,
-        String adres,
-        String miasto,
-        String kodpocztowy,
-        String kraj,
-        String nazwaStanowiska,
-        int liczbaGodzin,
-        float stawkaGodzinowa
-    ){
-                
+            int KtoraKolumna,
+            String pesel,
+            String imie,
+            String nazwisko,
+            String adres,
+            String miasto,
+            String kodpocztowy,
+            String kraj,
+            String nazwaStanowiska,
+            int liczbaGodzin,
+            float stawkaGodzinowa
+    ) {
+
         Pracownicy.set(Pracownicy.indexOf(znajdzPracownika(pesel)), new Pracownik(
                 pesel,
                 imie,
@@ -171,8 +184,8 @@ public class SqlConnection {
                 kraj,
                 nazwaStanowiska,
                 liczbaGodzin,
-                stawkaGodzinowa));  
-        
+                stawkaGodzinowa));
+
         zmienDanePracownikaSQL_Query.IDStanowiska = GetIDStanowiska(pesel);
         String SQL = zmienDanePracownikaSQL_Query.PobierzZapytanieSQL(
                 KtoraKolumna,
@@ -186,7 +199,7 @@ public class SqlConnection {
                 nazwaStanowiska,
                 liczbaGodzin,
                 stawkaGodzinowa);
-        
+
         try {
             stmt = conn.createStatement();
             stmt.executeUpdate(SQL);
@@ -196,7 +209,15 @@ public class SqlConnection {
         }
     }
 
-    public void GetEmployeesFromDataBase() {
+    public void UsunPracownika(String pesel) {
+        deleteEarnings(GetIDStanowiska(pesel));
+        deleteWorkPlace(pesel);
+        deleteTime(pesel);
+        deleteEmployer(pesel);
+        Pracownicy.remove(znajdzPracownika(pesel));
+    }
+
+    public void PobierzPracownikowZBazyDanych() {
         try {
             String SQL = "Select distinct p.Pesel, p.Imie, p.Nazwisko, p.Adres, p.Miasto, p.[Kod Pocztowy], p.Kraj,  s.Nazwa, e.Liczba_Godzin, st.Kwota from Pracownicy p\n"
                     + "LEFT JOIN Stanowiska s\n"
@@ -209,7 +230,7 @@ public class SqlConnection {
             stmt = conn.createStatement();
             rs = stmt.executeQuery(SQL);
 
-            Pracownicy = new ArrayList<>();            
+            Pracownicy = new ArrayList<>();
             while (rs.next()) {
                 Pracownicy.add(new Pracownik(
                         rs.getString(1),
@@ -227,39 +248,9 @@ public class SqlConnection {
             e.printStackTrace();
         }
     }
-    
-    private Pracownik znajdzPracownika(String pesel){
-        for(int i=0; i<Pracownicy.size(); i++){
-            if(pesel.equals(Pracownicy.get(i).PobierzPesel())){
-                return Pracownicy.get(i);
-            }
-        }
-        
-        return null;
-    }
-    
-    public void UsunPracownika(String pesel){     
-        deleteEarnings(GetIDStanowiska(pesel));
-        deleteWorkPlace(pesel);
-        deleteTime(pesel);
-        deleteEmployer(pesel);
-        Pracownicy.remove(znajdzPracownika(pesel));
-    }
-    
-    private void deleteEmployer(String pesel){
-        String SQL = "DELETE FROM Pracownicy WHERE Pesel='"+pesel+"'";
-        
-        try {
-            stmt = conn.createStatement();
-            stmt.execute(SQL);
 
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-    }
-    
-    private void deleteWorkPlace(String pesel){
-        String SQL = "DELETE FROM Stanowiska WHERE Pesel='"+pesel+"'";
+    private void deleteWorkPlace(String pesel) {
+        String SQL = "DELETE FROM Stanowiska WHERE Pesel='" + pesel + "'";
 
         try {
             stmt = conn.createStatement();
@@ -269,9 +260,10 @@ public class SqlConnection {
             ex.printStackTrace();
         }
     }
-    private void deleteTime(String pesel){
-        String SQL = "DELETE FROM Etat WHERE Pesel='"+pesel+"'";
- 
+
+    private void deleteTime(String pesel) {
+        String SQL = "DELETE FROM Etat WHERE Pesel='" + pesel + "'";
+
         try {
             stmt = conn.createStatement();
             stmt.execute(SQL);
@@ -280,10 +272,10 @@ public class SqlConnection {
             ex.printStackTrace();
         }
     }
-    
-    private void deleteEarnings(int idStanowiska){
-        String SQL = "DELETE FROM Stawka WHERE IDStanowiska='"+idStanowiska+"'";
- 
+
+    private void deleteEarnings(int idStanowiska) {
+        String SQL = "DELETE FROM Stawka WHERE IDStanowiska='" + idStanowiska + "'";
+
         try {
             stmt = conn.createStatement();
             stmt.execute(SQL);
@@ -292,8 +284,8 @@ public class SqlConnection {
             ex.printStackTrace();
         }
     }
-    
-    private int GetIDStanowiska(String pesel){
+
+    private int GetIDStanowiska(String pesel) {
         int idStanowiska = 0;
         String SQL = "Select IDStanowiska FROM Stanowiska s\n"
                 + "WHERE s.Pesel = '" + pesel + "'";
@@ -309,8 +301,127 @@ public class SqlConnection {
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-        
+
         return idStanowiska;
+    }
+
+    private void deleteEmployer(String pesel) {
+        String SQL = "DELETE FROM Pracownicy WHERE Pesel='" + pesel + "'";
+
+        try {
+            stmt = conn.createStatement();
+            stmt.execute(SQL);
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+// </editor-fold>
+    // ************************************
+    //FUNKCJE ODPOWIEDZIALNE ZA URLOPY
+    // <editor-fold defaultstate="collapsed" desc="Funkcje Urlopy">
+    public void PobierzUrlopyZBazyDanych() {
+        try {
+            String SQL = "Select distinct p.Pesel, p.Imie, p.Nazwisko, u.DataRozpoczecia, u.DataZakonczenia from Pracownicy p\n"
+                    + "RIGHT JOIN Urlopy u\n"
+                    + "ON p.Pesel = u.Pesel";
+
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery(SQL);
+
+            Urlopy = new ArrayList<>();
+            while (rs.next()) {
+                Urlopy.add(new Urlop(
+                        rs.getString(1),
+                        rs.getString(2),
+                        rs.getString(3),
+                        rs.getDate(4),
+                        rs.getDate(5)
+                ));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void DodajUrlop(
+            String pesel,
+            Date dataRozpoczecia,
+            Date dataZakonczenia) {
+
+        String SQL = "INSERT INTO Urlopy VALUES('" + pesel + "','" + dataRozpoczecia + "','" + dataZakonczenia + "')";
+
+        try {
+            stmt = conn.createStatement();
+            stmt.executeUpdate(SQL);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        Pracownik temp = znajdzPracownika(pesel);
+        Urlopy.add(new Urlop(pesel, temp.PobierzImie(), temp.PobierzNazwisko(), dataRozpoczecia, dataZakonczenia));
+        //znajdzUrlop(pesel).ZmienDaty(dataRozpoczecia, dataZakonczenia);
+    }
+
+    public void usunUrlop(String pesel) {
+        String SQL = "DELETE FROM Urlopy WHERE Pesel='" + pesel + "'";
+
+        try {
+            stmt = conn.createStatement();
+            stmt.execute(SQL);
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        Urlopy.remove(znajdzUrlop(pesel));
+    }
+
+    public void sortujUrlopyPoPeselu() {
+        for (int i = 0; i < Urlopy.size(); i++) {
+            for (int j = 1; j < Urlopy.size() - i; j++) {
+                if (Long.parseLong(Urlopy.get(j - 1).PobierzPesel()) > Long.parseLong(Urlopy.get(j).PobierzPesel())) {
+                    Urlop temp = Urlopy.get(j);
+                    Urlopy.set(j, Urlopy.get(j - 1));
+                    Urlopy.set(j - 1, temp);
+                }
+            }
+        }
+    }
+
+    public void sortujUrlopyPoNazwisku() {
+        for (int i = 0; i < Urlopy.size(); i++) {
+            for (int j = 1; j < Urlopy.size() - i; j++) {
+                if (Urlopy.get(j - 1).PobierzNazwisko().charAt(0) > Urlopy.get(j).PobierzNazwisko().charAt(0)) {
+                    Urlop temp = Urlopy.get(j);
+                    Urlopy.set(j, Urlopy.get(j - 1));
+                    Urlopy.set(j - 1, temp);
+                }
+            }
+        }
+    }
+// </editor-fold>
+    // ************************************
+
+    public Pracownik znajdzPracownika(String pesel) {
+        for (int i = 0; i < Pracownicy.size(); i++) {
+            if (pesel.equals(Pracownicy.get(i).PobierzPesel())) {
+                return Pracownicy.get(i);
+            }
+        }
+
+        return null;
+    }
+
+    public Urlop znajdzUrlop(String pesel) {
+        for (int i = 0; i < Urlopy.size(); i++) {
+            if (pesel.equals(Urlopy.get(i).PobierzPesel())) {
+                return Urlopy.get(i);
+            }
+        }
+
+        return null;
     }
 
 }

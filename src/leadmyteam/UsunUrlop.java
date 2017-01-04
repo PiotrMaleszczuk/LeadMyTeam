@@ -16,6 +16,17 @@ public class UsunUrlop extends javax.swing.JFrame {
         setAlwaysOnTop(true);
     }
 
+    public UsunUrlop(LeadMyTeam lmt, String content) {
+        this.leadMyTeam = lmt;
+        initComponents();
+        setLocationRelativeTo(null);
+        setResizable(false);
+        setDefaultCloseOperation(HIDE_ON_CLOSE);
+        setAlwaysOnTop(true);
+        
+        usunTextField.setText(content);
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -71,16 +82,21 @@ public class UsunUrlop extends javax.swing.JFrame {
 
     private void UsunButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UsunButtonActionPerformed
         this.pesel = usunTextField.getText();
-        //TODO sql, obsluga null
-        
-        this.dispose();
-        JOptionPane.showMessageDialog(null, "Usunięto urlop pracownika "+pesel);
+        if (leadMyTeam.sqlConn.znajdzUrlop(pesel) == null) {
+            JOptionPane.showMessageDialog(this, "Nie ma urlopu pracownika o takim peselu " + pesel);
+        } else {
+            leadMyTeam.sqlConn.usunUrlop(pesel);
+            leadMyTeam.OdsiwezUrlopy();
+            this.dispose();
+            JOptionPane.showMessageDialog(null, "Usunięto urlop pracownika " + pesel);
+        }
+
     }//GEN-LAST:event_UsunButtonActionPerformed
 
-    public String getPesel(){
+    public String getPesel() {
         return pesel;
     }
-    
+
     /**
      * @param args the command line arguments
      */

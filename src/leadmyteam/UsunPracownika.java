@@ -16,6 +16,18 @@ public class UsunPracownika extends javax.swing.JFrame {
         setDefaultCloseOperation(HIDE_ON_CLOSE);
         setAlwaysOnTop(true);
     }
+    
+    public UsunPracownika(LeadMyTeam lmt, String content) {
+        
+        this.leadMyTeam = lmt;
+        initComponents();
+        setLocationRelativeTo(null);
+        setResizable(false);
+        setDefaultCloseOperation(HIDE_ON_CLOSE);
+        setAlwaysOnTop(true);
+        
+        UsunTextField.setText(content);
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.

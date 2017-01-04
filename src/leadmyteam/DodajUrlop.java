@@ -1,22 +1,34 @@
 package leadmyteam;
 
+import java.sql.Date;
 import javax.swing.JOptionPane;
 
 public class DodajUrlop extends javax.swing.JFrame {
 
     private final LeadMyTeam leadMyTeam;
-    
+
     private String pesel;
-    private String dataRozp;
-    private String dataZak;
-    
+    private Date dataRozpoczecia;
+    private Date dataZakonczenia;
+
     public DodajUrlop(LeadMyTeam lmt) {
-        this.leadMyTeam=lmt;
+        this.leadMyTeam = lmt;
         initComponents();
         setLocationRelativeTo(null);
         setResizable(false);
         setDefaultCloseOperation(HIDE_ON_CLOSE);
         setAlwaysOnTop(true);
+    }
+
+    public DodajUrlop(LeadMyTeam lmt, String content) {
+        this.leadMyTeam = lmt;
+        initComponents();
+        setLocationRelativeTo(null);
+        setResizable(false);
+        setDefaultCloseOperation(HIDE_ON_CLOSE);
+        setAlwaysOnTop(true);
+        
+        peselTextField.setText(content);
     }
 
     /**
@@ -53,10 +65,6 @@ public class DodajUrlop extends javax.swing.JFrame {
                 wyslijButtonActionPerformed(evt);
             }
         });
-
-        jDateChooser1.setDateFormatString("dd-MM-yyyy");
-
-        jDateChooser4.setDateFormatString("dd-MM-yyyy");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -109,12 +117,21 @@ public class DodajUrlop extends javax.swing.JFrame {
     private void wyslijButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_wyslijButtonActionPerformed
         //TODO: obsluga null
         this.pesel = peselTextField.getText();
-        this.dataRozp = jDateChooser1.getDateFormatString();
-        this.dataZak = jDateChooser2.getDateFormatString();
-        //TODO: sql
-        
-        this.dispose();
-        JOptionPane.showMessageDialog(null, "Dodano urlop dla " + pesel);
+        java.util.Date dataRoz = jDateChooser1.getDate();
+        this.dataRozpoczecia = new Date(dataRoz.getTime());
+        java.util.Date dataZakon = jDateChooser4.getDate();
+        this.dataZakonczenia = new Date(dataZakon.getTime());
+
+        if (leadMyTeam.sqlConn.znajdzPracownika(pesel) == null) {
+            JOptionPane.showMessageDialog(this, "Pracownik o podanym peselu (" + pesel + ") nie istnieje.");
+        } else {
+            leadMyTeam.sqlConn.DodajUrlop(pesel, dataRozpoczecia, dataZakonczenia);
+            leadMyTeam.OdsiwezUrlopy();
+            this.dispose();
+
+            JOptionPane.showMessageDialog(null, "Dodano urlop dla " + pesel);
+        }
+
     }//GEN-LAST:event_wyslijButtonActionPerformed
 
     /**

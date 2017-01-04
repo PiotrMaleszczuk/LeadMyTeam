@@ -17,28 +17,40 @@ import javax.swing.plaf.basic.BasicTabbedPaneUI;
 public class LeadMyTeam extends javax.swing.JFrame {
 
     JTable tabelaPracownikow;
-    String[] ColumnsNames = {
-            "Pesel",
-            "Imie",
-            "Nazwisko",
-            "Adres",
-            "Miasto",
-            "Kod Pocztowy",
-            "Kraj",
-            "Stanowisko",
-            "Liczba Godzin",
-            "Wyplata"};
-    
+    String selectedContentPracownicy = "";
+    String selectedContentUrlopy = "";
+    String[] PracownicyColumnsNames = {
+        "Pesel",
+        "Imie",
+        "Nazwisko",
+        "Adres",
+        "Miasto",
+        "Kod Pocztowy",
+        "Kraj",
+        "Stanowisko",
+        "Liczba Godzin",
+        "Wyplata"};
+
+    String[] UrlopyColumnsNames = {
+        "Pesel",
+        "Imie",
+        "Nazwisko",
+        "Data Rozpoczecia",
+        "Data Zakonczenia"};
+
     public SqlConnection sqlConn;
 
     public LeadMyTeam() {
         sqlConn = new SqlConnection();
-        sqlConn.GetEmployeesFromDataBase();
+        sqlConn.PobierzPracownikowZBazyDanych();
+        sqlConn.PobierzUrlopyZBazyDanych();
         initComponents();
         setLocationRelativeTo(null);
         //setExtendedState(MAXIMIZED_BOTH);
         jTable1.setRowHeight(40);
+        jTable2.setRowHeight(40);
         OdswiezPracownikow();
+        OdsiwezUrlopy();
         jTabbedPane1.setUI(new BasicTabbedPaneUI());
     }
 
@@ -122,6 +134,11 @@ public class LeadMyTeam extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable1MouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(jTable1);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -185,6 +202,11 @@ public class LeadMyTeam extends javax.swing.JFrame {
         jLabel2.setText(" Sortowanie:");
 
         jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "", "Nazwisko", "PESEL" }));
+        jComboBox2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox2ActionPerformed(evt);
+            }
+        });
 
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -197,6 +219,11 @@ public class LeadMyTeam extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        jTable2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable2MouseClicked(evt);
+            }
+        });
         jScrollPane2.setViewportView(jTable2);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -230,7 +257,7 @@ public class LeadMyTeam extends javax.swing.JFrame {
                         .addComponent(DeleteButton2)
                         .addGap(48, 48, 48)
                         .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(54, Short.MAX_VALUE))
         );
@@ -324,20 +351,25 @@ public class LeadMyTeam extends javax.swing.JFrame {
     private void ComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ComboBoxActionPerformed
         switch (ComboBox.getSelectedItem().toString()) {
             case "Nazwisko":
-            sqlConn.Sort1();
-            OdswiezPracownikow();
-            break;
+                sqlConn.Sort1();
+                OdswiezPracownikow();
+                break;
 
             case "PESEL":
-            sqlConn.SortPesel();
-            OdswiezPracownikow();
-            break;
+                sqlConn.SortPesel();
+                OdswiezPracownikow();
+                break;
         }
     }//GEN-LAST:event_ComboBoxActionPerformed
 
     private void DeleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteButtonActionPerformed
-        UsunPracownika up = new UsunPracownika(this);
-        up.setVisible(true);
+        if (selectedContentPracownicy != null) {
+            UsunPracownika up = new UsunPracownika(this, selectedContentPracownicy);
+            up.setVisible(true);
+        } else {
+            UsunPracownika up = new UsunPracownika(this);
+            up.setVisible(true);
+        }
         OdswiezPracownikow();
     }//GEN-LAST:event_DeleteButtonActionPerformed
 
@@ -348,24 +380,35 @@ public class LeadMyTeam extends javax.swing.JFrame {
     }//GEN-LAST:event_AddButtonActionPerformed
 
     private void DisplayButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DisplayButtonActionPerformed
-        sqlConn.GetEmployeesFromDataBase();
+        sqlConn.PobierzPracownikowZBazyDanych();
         OdswiezPracownikow();
     }//GEN-LAST:event_DisplayButtonActionPerformed
 
     private void DisplayButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DisplayButton2ActionPerformed
-        // TODO add your handling code here:
+        sqlConn.PobierzUrlopy();
+        OdsiwezUrlopy();
     }//GEN-LAST:event_DisplayButton2ActionPerformed
 
     private void AddButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddButton2ActionPerformed
-        DodajUrlop du = new DodajUrlop(this);
-        du.setVisible(true);
-        //TODO: Odwiezanie
+        if (selectedContentPracownicy != null) {
+            DodajUrlop du = new DodajUrlop(this, selectedContentPracownicy);
+            du.setVisible(true);
+        } else {
+            DodajUrlop du = new DodajUrlop(this);
+            du.setVisible(true);
+        }
+        OdsiwezUrlopy();
     }//GEN-LAST:event_AddButton2ActionPerformed
 
     private void DeleteButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteButton2ActionPerformed
-        UsunUrlop uu = new UsunUrlop(this);
-        uu.setVisible(true);
-        //TODO: Odswiezanie
+        if (selectedContentUrlopy != null) {
+            UsunUrlop uu = new UsunUrlop(this, selectedContentUrlopy);
+            uu.setVisible(true);
+        } else {
+            UsunUrlop uu = new UsunUrlop(this);
+            uu.setVisible(true);
+        }
+        OdsiwezUrlopy();
     }//GEN-LAST:event_DeleteButton2ActionPerformed
 
     private void AddButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddButton3ActionPerformed
@@ -380,42 +423,66 @@ public class LeadMyTeam extends javax.swing.JFrame {
         //TODO: Odswiezanie
     }//GEN-LAST:event_DeleteButton3ActionPerformed
 
+    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
+        selectedContentPracownicy = jTable1.getModel().getValueAt(jTable1.getSelectedRow(), 0).toString();
+    }//GEN-LAST:event_jTable1MouseClicked
+
+    private void jTable2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable2MouseClicked
+        selectedContentUrlopy = jTable2.getModel().getValueAt(jTable2.getSelectedRow(), 0).toString();
+    }//GEN-LAST:event_jTable2MouseClicked
+
+    private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox2ActionPerformed
+        switch (jComboBox2.getSelectedItem().toString()) {
+            case "Nazwisko":
+                sqlConn.sortujUrlopyPoNazwisku();
+                OdsiwezUrlopy();
+                break;
+
+            case "PESEL":
+                sqlConn.sortujUrlopyPoPeselu();
+                OdsiwezUrlopy();
+                break;
+        }
+    }//GEN-LAST:event_jComboBox2ActionPerformed
+
     public void OdswiezPracownikow() {
         String pracownicy = "";
         for (int i = 0; i < sqlConn.Pracownicy.size(); i++) {
             pracownicy += sqlConn.Pracownicy.get(i).PobierzDane() + "\n";
         }
-        
-        jTable1.setModel(new DefaultTableModel(sqlConn.PobierzPracownikow(), ColumnsNames));
+
+        jTable1.setModel(new DefaultTableModel(sqlConn.PobierzPracownikow(), PracownicyColumnsNames));
         jTable1.getModel().addTableModelListener(new TableModelListener() {
             @Override
             public void tableChanged(TableModelEvent e) {
                 float wyplata = Float.parseFloat(jTable1.getModel().getValueAt(e.getLastRow(), 9).toString());
                 int liczbaGodzin = Integer.parseInt(jTable1.getModel().getValueAt(e.getLastRow(), 8).toString());
-                float stawkaGodzinowa = wyplata/(float)liczbaGodzin;
+                float stawkaGodzinowa = wyplata / (float) liczbaGodzin;
                 sqlConn.ZmienDanePracownika(
                         e.getColumn(),
-                        jTable1.getModel().getValueAt(e.getLastRow(), 0).toString(),    //pesel
-                        jTable1.getModel().getValueAt(e.getLastRow(), 1).toString(),    //imie,
-                        jTable1.getModel().getValueAt(e.getLastRow(), 2).toString(),    //nazwisko,
-                        jTable1.getModel().getValueAt(e.getLastRow(), 3).toString(),    //adres,
-                        jTable1.getModel().getValueAt(e.getLastRow(), 4).toString(),    //miasto,
-                        jTable1.getModel().getValueAt(e.getLastRow(), 5).toString(),    //kodpocztowy,
-                        jTable1.getModel().getValueAt(e.getLastRow(), 6).toString(),    //kraj,
-                        jTable1.getModel().getValueAt(e.getLastRow(), 7).toString(),    //nazwaStanowiska,
-                        liczbaGodzin,                                                   //liczbaGodzin,
-                        stawkaGodzinowa                                                 //stawkaGodzinowa);
-                        );
+                        jTable1.getModel().getValueAt(e.getLastRow(), 0).toString(), //pesel
+                        jTable1.getModel().getValueAt(e.getLastRow(), 1).toString(), //imie,
+                        jTable1.getModel().getValueAt(e.getLastRow(), 2).toString(), //nazwisko,
+                        jTable1.getModel().getValueAt(e.getLastRow(), 3).toString(), //adres,
+                        jTable1.getModel().getValueAt(e.getLastRow(), 4).toString(), //miasto,
+                        jTable1.getModel().getValueAt(e.getLastRow(), 5).toString(), //kodpocztowy,
+                        jTable1.getModel().getValueAt(e.getLastRow(), 6).toString(), //kraj,
+                        jTable1.getModel().getValueAt(e.getLastRow(), 7).toString(), //nazwaStanowiska,
+                        liczbaGodzin, //liczbaGodzin,
+                        stawkaGodzinowa //stawkaGodzinowa);
+                );
                 OdswiezPracownikow();
             }
         });
     }
-    
-    //TODO
-    public void OdsiwezUrlopy(){}
-    public void OdswiezProjekty(){}
-    
-    
+
+    public void OdsiwezUrlopy() {
+        jTable2.setModel(new DefaultTableModel(sqlConn.PobierzUrlopy(), UrlopyColumnsNames));
+    }
+
+    public void OdswiezProjekty() {
+    }
+
     /**
      * @param args the command line arguments
      */
