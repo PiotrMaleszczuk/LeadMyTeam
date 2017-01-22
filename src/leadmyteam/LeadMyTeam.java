@@ -8,6 +8,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
@@ -17,8 +18,9 @@ import javax.swing.plaf.basic.BasicTabbedPaneUI;
 public class LeadMyTeam extends javax.swing.JFrame {
 
     JTable tabelaPracownikow;
-    String selectedContentPracownicy = "";
-    String selectedContentUrlopy = "";
+    String selectedContentPracownicy = null;
+    String selectedContentUrlopy = null;
+    String selectedContentProjekty = null;
     String[] PracownicyColumnsNames = {
         "Pesel",
         "Imie",
@@ -37,6 +39,13 @@ public class LeadMyTeam extends javax.swing.JFrame {
         "Nazwisko",
         "Data Rozpoczecia",
         "Data Zakonczenia"};
+    
+    String[] ProjektyColumnsNames = {
+        "ID Projektu",
+        "Nazwa Projektu",
+        "Data Oddania",
+        "Data Rozpoczecia"
+    };
 
     public SqlConnection sqlConn;
 
@@ -44,13 +53,16 @@ public class LeadMyTeam extends javax.swing.JFrame {
         sqlConn = new SqlConnection();
         sqlConn.PobierzPracownikowZBazyDanych();
         sqlConn.PobierzUrlopyZBazyDanych();
+        sqlConn.PobierzProjektyZBazyDanych();
         initComponents();
         setLocationRelativeTo(null);
         //setExtendedState(MAXIMIZED_BOTH);
         jTable1.setRowHeight(40);
         jTable2.setRowHeight(40);
+        jTable3.setRowHeight(40);
         OdswiezPracownikow();
         OdsiwezUrlopy();
+        OdswiezProjekty();
         jTabbedPane1.setUI(new BasicTabbedPaneUI());
     }
 
@@ -89,6 +101,10 @@ public class LeadMyTeam extends javax.swing.JFrame {
         jComboBox3 = new javax.swing.JComboBox<>();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTable3 = new javax.swing.JTable();
+        SzczegolyButton = new javax.swing.JButton();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenu1 = new javax.swing.JMenu();
+        jMenu2 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("LeadMyTeam");
@@ -134,6 +150,11 @@ public class LeadMyTeam extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        jTable1.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                jTable1FocusLost(evt);
+            }
+        });
         jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jTable1MouseClicked(evt);
@@ -173,7 +194,7 @@ public class LeadMyTeam extends javax.swing.JFrame {
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(ComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(54, Short.MAX_VALUE))
+                .addContainerGap(33, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Lista pracowników", jPanel1);
@@ -219,6 +240,11 @@ public class LeadMyTeam extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        jTable2.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                jTable2FocusLost(evt);
+            }
+        });
         jTable2.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jTable2MouseClicked(evt);
@@ -259,12 +285,17 @@ public class LeadMyTeam extends javax.swing.JFrame {
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(54, Short.MAX_VALUE))
+                .addContainerGap(33, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Urlopy", jPanel2);
 
         DisplayButton3.setText("Odśwież");
+        DisplayButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                DisplayButton3ActionPerformed(evt);
+            }
+        });
 
         AddButton3.setText("Dodaj projekt");
         AddButton3.addActionListener(new java.awt.event.ActionListener() {
@@ -295,7 +326,19 @@ public class LeadMyTeam extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        jTable3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable3MouseClicked(evt);
+            }
+        });
         jScrollPane3.setViewportView(jTable3);
+
+        SzczegolyButton.setText("Szczegóły");
+        SzczegolyButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SzczegolyButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -308,7 +351,8 @@ public class LeadMyTeam extends javax.swing.JFrame {
                     .addComponent(DisplayButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(AddButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(DeleteButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jComboBox3, 0, 141, Short.MAX_VALUE))
+                    .addComponent(jComboBox3, 0, 141, Short.MAX_VALUE)
+                    .addComponent(SzczegolyButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(55, 55, 55)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 1094, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(34, Short.MAX_VALUE))
@@ -325,14 +369,24 @@ public class LeadMyTeam extends javax.swing.JFrame {
                         .addComponent(AddButton3)
                         .addGap(18, 18, 18)
                         .addComponent(DeleteButton3)
-                        .addGap(48, 48, 48)
+                        .addGap(18, 18, 18)
+                        .addComponent(SzczegolyButton)
+                        .addGap(43, 43, 43)
                         .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGap(18, 18, 18)
                         .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(54, Short.MAX_VALUE))
+                .addContainerGap(33, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Projekty", jPanel3);
+
+        jMenu1.setText("File");
+        jMenuBar1.add(jMenu1);
+
+        jMenu2.setText("Edit");
+        jMenuBar1.add(jMenu2);
+
+        setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -364,11 +418,13 @@ public class LeadMyTeam extends javax.swing.JFrame {
 
     private void DeleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteButtonActionPerformed
         if (selectedContentPracownicy != null) {
-            UsunPracownika up = new UsunPracownika(this, selectedContentPracownicy);
+            UsunPracownika up = new UsunPracownika(this, selectedContentPracownicy,
+                    sqlConn.znajdzPracownika(selectedContentPracownicy).PobierzImie(),
+                    sqlConn.znajdzPracownika(selectedContentPracownicy).PobierzNazwisko());
             up.setVisible(true);
+            selectedContentPracownicy = null;
         } else {
-            UsunPracownika up = new UsunPracownika(this);
-            up.setVisible(true);
+            JOptionPane.showMessageDialog(this, "Nie zaznaczono żadnego pracownika");
         }
         OdswiezPracownikow();
     }//GEN-LAST:event_DeleteButtonActionPerformed
@@ -402,11 +458,13 @@ public class LeadMyTeam extends javax.swing.JFrame {
 
     private void DeleteButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteButton2ActionPerformed
         if (selectedContentUrlopy != null) {
-            UsunUrlop uu = new UsunUrlop(this, selectedContentUrlopy);
+            UsunUrlop uu = new UsunUrlop(this, selectedContentUrlopy,
+            sqlConn.znajdzUrlop(selectedContentUrlopy).PobierzImie(),
+            sqlConn.znajdzUrlop(selectedContentUrlopy).PobierzNazwisko());
+            selectedContentUrlopy = null;
             uu.setVisible(true);
         } else {
-            UsunUrlop uu = new UsunUrlop(this);
-            uu.setVisible(true);
+            JOptionPane.showMessageDialog(this, "Nie zaznaczono żadnego urlopu");
         }
         OdsiwezUrlopy();
     }//GEN-LAST:event_DeleteButton2ActionPerformed
@@ -445,6 +503,34 @@ public class LeadMyTeam extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jComboBox2ActionPerformed
 
+    private void jTable1FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTable1FocusLost
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTable1FocusLost
+
+    private void jTable2FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTable2FocusLost
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTable2FocusLost
+
+    private void jTable3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable3MouseClicked
+        // TODO add your handling code here:
+        selectedContentProjekty = jTable3.getModel().getValueAt(jTable3.getSelectedRow(), 0).toString();
+    }//GEN-LAST:event_jTable3MouseClicked
+
+    private void DisplayButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DisplayButton3ActionPerformed
+        sqlConn.PobierzProjekty();
+        OdswiezProjekty();
+    }//GEN-LAST:event_DisplayButton3ActionPerformed
+
+    private void SzczegolyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SzczegolyButtonActionPerformed
+        // TODO add your handling code here:
+        // Do zrobienia szczególy projektów
+        // Najlepiej jako nowe okno, czyli trzeba zrobić nowy layout
+        // Tak jak w poprzednich przypadkach stworzyłem listę projekty która składa się z klas Projekt
+        // Projekt ma w sobie, ID, Nazwe, DateRozpoczecia, DateOddania oraz Liste (klasy) Procownik w której znajdują się pracownicy
+        // uczestniczący w danym projekcie, czyli w szczególach trzeba po prostu w jakieś tabeli wyświetlic tych pracowników
+        // z danego projektu.
+    }//GEN-LAST:event_SzczegolyButtonActionPerformed
+
     public void OdswiezPracownikow() {
         String pracownicy = "";
         for (int i = 0; i < sqlConn.Pracownicy.size(); i++) {
@@ -479,8 +565,9 @@ public class LeadMyTeam extends javax.swing.JFrame {
     public void OdsiwezUrlopy() {
         jTable2.setModel(new DefaultTableModel(sqlConn.PobierzUrlopy(), UrlopyColumnsNames));
     }
-
-    public void OdswiezProjekty() {
+    
+    public void OdswiezProjekty(){
+        jTable3.setModel(new DefaultTableModel(sqlConn.PobierzProjekty(), ProjektyColumnsNames));
     }
 
     /**
@@ -529,12 +616,16 @@ public class LeadMyTeam extends javax.swing.JFrame {
     private javax.swing.JButton DisplayButton;
     private javax.swing.JButton DisplayButton2;
     private javax.swing.JButton DisplayButton3;
+    private javax.swing.JButton SzczegolyButton;
     private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JComboBox<String> jComboBox3;
     private javax.swing.JFileChooser jFileChooser;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;

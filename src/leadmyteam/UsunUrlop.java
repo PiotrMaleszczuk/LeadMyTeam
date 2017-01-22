@@ -7,24 +7,15 @@ public class UsunUrlop extends javax.swing.JFrame {
     private final LeadMyTeam leadMyTeam;
     private String pesel;
 
-    public UsunUrlop(LeadMyTeam lmt) {
+    public UsunUrlop(LeadMyTeam lmt, String content, String imie, String nazwisko) {
         this.leadMyTeam = lmt;
         initComponents();
         setLocationRelativeTo(null);
         setResizable(false);
         setDefaultCloseOperation(HIDE_ON_CLOSE);
         setAlwaysOnTop(true);
-    }
-
-    public UsunUrlop(LeadMyTeam lmt, String content) {
-        this.leadMyTeam = lmt;
-        initComponents();
-        setLocationRelativeTo(null);
-        setResizable(false);
-        setDefaultCloseOperation(HIDE_ON_CLOSE);
-        setAlwaysOnTop(true);
-        
-        usunTextField.setText(content);
+        pesel = content;
+        informacjeLabel.setText(pesel + "  " + imie + "  " + nazwisko);
     }
 
     /**
@@ -37,12 +28,13 @@ public class UsunUrlop extends javax.swing.JFrame {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        usunTextField = new javax.swing.JTextField();
         UsunButton = new javax.swing.JButton();
+        anulujButton = new javax.swing.JButton();
+        informacjeLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jLabel1.setText("Pesel");
+        jLabel1.setText("Czy napewno chcesz usunac urlop pracownika:");
 
         UsunButton.setText("Usuń");
         UsunButton.addActionListener(new java.awt.event.ActionListener() {
@@ -51,47 +43,62 @@ public class UsunUrlop extends javax.swing.JFrame {
             }
         });
 
+        anulujButton.setText("Anuluj");
+        anulujButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                anulujButtonActionPerformed(evt);
+            }
+        });
+
+        informacjeLabel.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        informacjeLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        informacjeLabel.setText("informacjePracownika");
+        informacjeLabel.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        informacjeLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(34, 34, 34)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(UsunButton)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(usunTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(UsunButton, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(anulujButton))
+                    .addComponent(informacjeLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(31, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(23, 23, 23)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(usunTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(26, 26, 26)
+                .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(UsunButton)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(informacjeLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(UsunButton)
+                    .addComponent(anulujButton))
+                .addGap(24, 24, 24))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void UsunButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UsunButtonActionPerformed
-        this.pesel = usunTextField.getText();
-        if (leadMyTeam.sqlConn.znajdzUrlop(pesel) == null) {
-            JOptionPane.showMessageDialog(this, "Nie ma urlopu pracownika o takim peselu " + pesel);
-        } else {
-            leadMyTeam.sqlConn.usunUrlop(pesel);
-            leadMyTeam.OdsiwezUrlopy();
-            this.dispose();
-            JOptionPane.showMessageDialog(null, "Usunięto urlop pracownika " + pesel);
-        }
-
+        leadMyTeam.sqlConn.usunUrlop(pesel);
+        leadMyTeam.OdsiwezUrlopy();
+        this.dispose();
+        JOptionPane.showMessageDialog(this, "Usunięto urlop pracownika " + pesel);
     }//GEN-LAST:event_UsunButtonActionPerformed
+
+    private void anulujButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_anulujButtonActionPerformed
+        // TODO add your handling code here:
+        this.dispose();
+    }//GEN-LAST:event_anulujButtonActionPerformed
 
     public String getPesel() {
         return pesel;
@@ -133,7 +140,8 @@ public class UsunUrlop extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton UsunButton;
+    private javax.swing.JButton anulujButton;
+    private javax.swing.JLabel informacjeLabel;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JTextField usunTextField;
     // End of variables declaration//GEN-END:variables
 }

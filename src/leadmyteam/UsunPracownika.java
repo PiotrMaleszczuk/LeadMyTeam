@@ -7,7 +7,7 @@ public class UsunPracownika extends javax.swing.JFrame {
     private String pesel;
     private final LeadMyTeam leadMyTeam;
     
-    public UsunPracownika(LeadMyTeam lmt) {
+    public UsunPracownika(LeadMyTeam lmt, String content, String imie, String nazwisko) {
         
         this.leadMyTeam = lmt;
         initComponents();
@@ -15,18 +15,8 @@ public class UsunPracownika extends javax.swing.JFrame {
         setResizable(false);
         setDefaultCloseOperation(HIDE_ON_CLOSE);
         setAlwaysOnTop(true);
-    }
-    
-    public UsunPracownika(LeadMyTeam lmt, String content) {
-        
-        this.leadMyTeam = lmt;
-        initComponents();
-        setLocationRelativeTo(null);
-        setResizable(false);
-        setDefaultCloseOperation(HIDE_ON_CLOSE);
-        setAlwaysOnTop(true);
-        
-        UsunTextField.setText(content);
+        pesel = content;
+        peselLabel.setText(pesel + "  " + imie + "  " + nazwisko);
     }
 
     /**
@@ -38,14 +28,19 @@ public class UsunPracownika extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
-        UsunTextField = new javax.swing.JTextField();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
         UsunButton = new javax.swing.JButton();
+        AnulujButton = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        peselLabel = new javax.swing.JLabel();
+
+        jTextArea1.setColumns(20);
+        jTextArea1.setRows(5);
+        jScrollPane1.setViewportView(jTextArea1);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Usuń Pracownika");
-
-        jLabel1.setText("Pesel");
 
         UsunButton.setText("Usuń");
         UsunButton.addActionListener(new java.awt.event.ActionListener() {
@@ -54,30 +49,46 @@ public class UsunPracownika extends javax.swing.JFrame {
             }
         });
 
+        AnulujButton.setText("Anuluj");
+        AnulujButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                AnulujButtonActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setText("Czy napewno usunac pracownika o peselu:");
+
+        peselLabel.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        peselLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        peselLabel.setText("pesel");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(34, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(UsunButton)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(27, 27, 27)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(UsunTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(31, 31, 31))
+                        .addComponent(UsunButton, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(AnulujButton))
+                    .addComponent(peselLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(28, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(23, 23, 23)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(UsunTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(34, 34, 34)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(peselLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(UsunButton)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(AnulujButton)
+                    .addComponent(UsunButton))
+                .addGap(22, 22, 22))
         );
 
         pack();
@@ -85,12 +96,15 @@ public class UsunPracownika extends javax.swing.JFrame {
  
     private void UsunButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UsunButtonActionPerformed
         //TODO obsluga null
-        pesel = UsunTextField.getText();
         leadMyTeam.sqlConn.UsunPracownika(pesel);
         leadMyTeam.OdswiezPracownikow();
-        JOptionPane.showMessageDialog(null, "Usunięto pracownika "+pesel);
+        JOptionPane.showMessageDialog(this, "Usunięto pracownika "+pesel);
         this.dispose();
     }//GEN-LAST:event_UsunButtonActionPerformed
+
+    private void AnulujButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AnulujButtonActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_AnulujButtonActionPerformed
 
     public String getPesel(){
         return pesel;
@@ -129,8 +143,11 @@ public class UsunPracownika extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton AnulujButton;
     private javax.swing.JButton UsunButton;
-    private javax.swing.JTextField UsunTextField;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JLabel peselLabel;
     // End of variables declaration//GEN-END:variables
 }

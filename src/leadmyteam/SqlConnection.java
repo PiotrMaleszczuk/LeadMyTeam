@@ -15,6 +15,7 @@ public class SqlConnection {
     private ZmienDanePracownikaSQL_Query zmienDanePracownikaSQL_Query = new ZmienDanePracownikaSQL_Query();
     public List<Pracownik> Pracownicy;
     public List<Urlop> Urlopy;
+    public List<Projekt> Projekty;
 
     String connectionUrl = "jdbc:sqlserver://localhost:1433;"
             + "databaseName=LeadMyTeam;user=LeadMyTeam;password=leadmyteam;integratedSecurity=true";
@@ -22,6 +23,7 @@ public class SqlConnection {
     public SqlConnection() {
         Pracownicy = new ArrayList<>();
         Urlopy = new ArrayList<>();
+        Projekty = new ArrayList<>();
         Connect();
     }
 
@@ -39,6 +41,15 @@ public class SqlConnection {
 
         for (int i = 0; i < Urlopy.size(); i++) {
             dane[i] = Urlopy.get(i).PobierzObiekt();
+        }
+        return dane;
+    }
+
+    public Object[][] PobierzProjekty() {
+        Object[][] dane = new Object[Projekty.size()][Projekty.get(0).dlugosc];
+
+        for (int i = 0; i < Projekty.size(); i++) {
+            dane[i] = Projekty.get(i).PobierzObiekt();
         }
         return dane;
     }
@@ -403,14 +414,55 @@ public class SqlConnection {
     }
 // </editor-fold>
     // ************************************
+    //FUNKCJE ODPOWIEDZIALNE ZA PROJEKTY
+    // <editor-fold defaultstate="collapsed" desc="Funkcje Urlopy">
 
+    public void PobierzProjektyZBazyDanych() {
+        try {
+            String SQL = "Select distinct p.IDProjektu, p.NazwaProjektu, p.DataOddania, p.DataRozpoczecia from Projekt p";
+
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery(SQL);
+
+            Projekty = new ArrayList<>();
+            while (rs.next()) {
+                Projekty.add(new Projekt(
+                        rs.getInt(1),
+                        rs.getString(2),
+                        rs.getDate(3),
+                        rs.getDate(4)
+                ));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        PobierzUczestnikowDoProjektowZBazyDanych();
+    }
+
+    private void PobierzUczestnikowDoProjektowZBazyDanych() {
+        try {
+            String SQL = "Select * FROM UczestnicyProjektu";
+
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery(SQL);
+
+            while (rs.next()) {
+                if (znajdzProjekt(rs.getInt(2)) != null) {
+                    znajdzProjekt(rs.getInt(2)).uczestnicyProjektu.add(znajdzPracownika(rs.getString(1)));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+// </editor-fold>
     public Pracownik znajdzPracownika(String pesel) {
         for (int i = 0; i < Pracownicy.size(); i++) {
             if (pesel.equals(Pracownicy.get(i).PobierzPesel())) {
                 return Pracownicy.get(i);
             }
         }
-
         return null;
     }
 
@@ -420,7 +472,15 @@ public class SqlConnection {
                 return Urlopy.get(i);
             }
         }
+        return null;
+    }
 
+    public Projekt znajdzProjekt(int idProjektu) {
+        for (int i = 0; i < Projekty.size(); i++) {
+            if (idProjektu == Projekty.get(i).PobierzIdProjektu()) {
+                return Projekty.get(i);
+            }
+        }
         return null;
     }
 

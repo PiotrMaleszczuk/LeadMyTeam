@@ -39,6 +39,10 @@ public class Urlop {
         return nazwisko;
     }
     
+    public String PobierzImie(){
+        return imie;
+    }
+    
     public String PobierzPesel(){
         return pesel;
     }
