@@ -416,7 +416,7 @@ public class SqlConnection {
 // </editor-fold>
     // ************************************
     //FUNKCJE ODPOWIEDZIALNE ZA PROJEKTY
-    // <editor-fold defaultstate="collapsed" desc="Funkcje Urlopy">
+    // <editor-fold defaultstate="collapsed" desc="Funkcje Projekty">
 
     public void PobierzProjektyZBazyDanych() {
         try {
@@ -456,7 +456,7 @@ public class SqlConnection {
             e.printStackTrace();
         }
     }
-    
+
     public void DodajProjekt(
             String nazwaProjektu,
             Date dataRozpoczecia,
@@ -464,14 +464,34 @@ public class SqlConnection {
 
         try {
             String SQL = "INSERT INTO Projekt VALUES('" + nazwaProjektu + "','" + dataZakonczenia + "','" + dataRozpoczecia + "')";
-            
+
             stmt = conn.createStatement();
             stmt.executeUpdate(SQL);
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
+        
+        Projekty.add(new Projekt(PobierzIdProjektuZBazyDanych(nazwaProjektu),nazwaProjektu, dataZakonczenia, dataRozpoczecia));
     }
-    
+
+    private int PobierzIdProjektuZBazyDanych(String nazwa) {
+        int id = 0;
+        try {
+            String SQL = "Select p.IDProjektu from Projekt p\n" +
+                         "WHERE p.NazwaProjektu = '" + nazwa + "'";
+
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery(SQL);
+
+            while (rs.next()) {
+                id = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return id;
+    }
+
     public void sortujProjektyPoId() {
         for (int i = 0; i < Projekty.size(); i++) {
             for (int j = 1; j < Projekty.size() - i; j++) {
@@ -496,8 +516,7 @@ public class SqlConnection {
         }
     }
 // </editor-fold>
-    
-    
+
     public Pracownik znajdzPracownika(String pesel) {
         for (int i = 0; i < Pracownicy.size(); i++) {
             if (pesel.equals(Pracownicy.get(i).PobierzPesel())) {
@@ -525,9 +544,9 @@ public class SqlConnection {
         return null;
     }
 
-    public Projekt znajdzProjektPoNazwie(String nazwa){
+    public Projekt znajdzProjektPoNazwie(String nazwa) {
         for (int i = 0; i < Projekty.size(); i++) {
-             if (nazwa.equals(Projekty.get(i).PobierzNazweProjektu())) {
+            if (nazwa.equals(Projekty.get(i).PobierzNazweProjektu())) {
                 return Projekty.get(i);
             }
         }
