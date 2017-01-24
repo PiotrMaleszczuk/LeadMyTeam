@@ -29,7 +29,12 @@ public class Projekt {
         this.nazwaProjektu = NazwaProjektu;
         this.dataOddania = DataOddania;
         this.dataRozpoczecia = DataRozpoczecia;
-    }   
+    }
+
+    Projekt(String nazwaProjektu, Date dataZakonczenia, Date dataRozpoczecia) {
+        this.nazwaProjektu = nazwaProjektu;
+        this.dataOddania = dataOddania;
+        this.dataRozpoczecia = dataRozpoczecia;}
     
     public Object[] PobierzObiekt(){
         Object[] dane = {idProjektu, nazwaProjektu, dataOddania, dataRozpoczecia};

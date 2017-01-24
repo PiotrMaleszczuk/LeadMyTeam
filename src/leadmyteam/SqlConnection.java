@@ -5,6 +5,8 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Collections;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class SqlConnection {
 
@@ -372,7 +374,6 @@ public class SqlConnection {
 
         Pracownik temp = znajdzPracownika(pesel);
         Urlopy.add(new Urlop(pesel, temp.PobierzImie(), temp.PobierzNazwisko(), dataRozpoczecia, dataZakonczenia));
-        //znajdzUrlop(pesel).ZmienDaty(dataRozpoczecia, dataZakonczenia);
     }
 
     public void usunUrlop(String pesel) {
@@ -447,16 +448,56 @@ public class SqlConnection {
             rs = stmt.executeQuery(SQL);
 
             while (rs.next()) {
-                if (znajdzProjekt(rs.getInt(2)) != null) {
-                    znajdzProjekt(rs.getInt(2)).uczestnicyProjektu.add(znajdzPracownika(rs.getString(1)));
+                if (znajdzProjektPoID(rs.getInt(2)) != null) {
+                    znajdzProjektPoID(rs.getInt(2)).uczestnicyProjektu.add(znajdzPracownika(rs.getString(1)));
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+    
+    public void DodajProjekt(
+            String nazwaProjektu,
+            Date dataRozpoczecia,
+            Date dataZakonczenia) {
 
+        try {
+            String SQL = "INSERT INTO Projekt VALUES('" + nazwaProjektu + "','" + dataZakonczenia + "','" + dataRozpoczecia + "')";
+            
+            stmt = conn.createStatement();
+            stmt.executeUpdate(SQL);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+    
+    public void sortujProjektyPoId() {
+        for (int i = 0; i < Projekty.size(); i++) {
+            for (int j = 1; j < Projekty.size() - i; j++) {
+                if (Projekty.get(j - 1).PobierzIdProjektu() > Projekty.get(j).PobierzIdProjektu()) {
+                    Projekt temp = Projekty.get(j);
+                    Projekty.set(j, Projekty.get(j - 1));
+                    Projekty.set(j - 1, temp);
+                }
+            }
+        }
+    }
+
+    public void sortujProjektyPoNazwie() {
+        for (int i = 0; i < Projekty.size(); i++) {
+            for (int j = 1; j < Projekty.size() - i; j++) {
+                if (Projekty.get(j - 1).PobierzNazweProjektu().charAt(0) > Projekty.get(j).PobierzNazweProjektu().charAt(0)) {
+                    Projekt temp = Projekty.get(j);
+                    Projekty.set(j, Projekty.get(j - 1));
+                    Projekty.set(j - 1, temp);
+                }
+            }
+        }
+    }
 // </editor-fold>
+    
+    
     public Pracownik znajdzPracownika(String pesel) {
         for (int i = 0; i < Pracownicy.size(); i++) {
             if (pesel.equals(Pracownicy.get(i).PobierzPesel())) {
@@ -475,7 +516,7 @@ public class SqlConnection {
         return null;
     }
 
-    public Projekt znajdzProjekt(int idProjektu) {
+    public Projekt znajdzProjektPoID(int idProjektu) {
         for (int i = 0; i < Projekty.size(); i++) {
             if (idProjektu == Projekty.get(i).PobierzIdProjektu()) {
                 return Projekty.get(i);
@@ -484,4 +525,12 @@ public class SqlConnection {
         return null;
     }
 
+    public Projekt znajdzProjektPoNazwie(String nazwa){
+        for (int i = 0; i < Projekty.size(); i++) {
+             if (nazwa.equals(Projekty.get(i).PobierzNazweProjektu())) {
+                return Projekty.get(i);
+            }
+        }
+        return null;
+    }
 }

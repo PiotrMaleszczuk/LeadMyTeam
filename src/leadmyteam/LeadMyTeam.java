@@ -78,7 +78,6 @@ public class LeadMyTeam extends javax.swing.JFrame {
         jFileChooser = new javax.swing.JFileChooser();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
-        DisplayButton = new javax.swing.JButton();
         AddButton = new javax.swing.JButton();
         DeleteButton = new javax.swing.JButton();
         ComboBox = new javax.swing.JComboBox<>();
@@ -86,7 +85,6 @@ public class LeadMyTeam extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jPanel2 = new javax.swing.JPanel();
-        DisplayButton2 = new javax.swing.JButton();
         AddButton2 = new javax.swing.JButton();
         DeleteButton2 = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
@@ -102,19 +100,14 @@ public class LeadMyTeam extends javax.swing.JFrame {
         jScrollPane3 = new javax.swing.JScrollPane();
         jTable3 = new javax.swing.JTable();
         SzczegolyButton = new javax.swing.JButton();
-        jMenuBar1 = new javax.swing.JMenuBar();
+        javax.swing.JMenuBar jMenuBar = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
+        jMenu3 = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("LeadMyTeam");
-
-        DisplayButton.setText("Odśwież");
-        DisplayButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                DisplayButtonActionPerformed(evt);
-            }
-        });
 
         AddButton.setText("Dodaj pracownika");
         AddButton.addActionListener(new java.awt.event.ActionListener() {
@@ -172,8 +165,7 @@ public class LeadMyTeam extends javax.swing.JFrame {
                     .addComponent(AddButton, javax.swing.GroupLayout.DEFAULT_SIZE, 141, Short.MAX_VALUE)
                     .addComponent(DeleteButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(ComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel1)
-                    .addComponent(DisplayButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jLabel1))
                 .addGap(55, 55, 55)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1094, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(34, Short.MAX_VALUE))
@@ -185,8 +177,7 @@ public class LeadMyTeam extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 628, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(DisplayButton)
-                        .addGap(18, 18, 18)
+                        .addGap(41, 41, 41)
                         .addComponent(AddButton)
                         .addGap(18, 18, 18)
                         .addComponent(DeleteButton)
@@ -198,13 +189,6 @@ public class LeadMyTeam extends javax.swing.JFrame {
         );
 
         jTabbedPane1.addTab("Lista pracowników", jPanel1);
-
-        DisplayButton2.setText("Odśwież");
-        DisplayButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                DisplayButton2ActionPerformed(evt);
-            }
-        });
 
         AddButton2.setText("Dodaj urlop");
         AddButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -261,7 +245,6 @@ public class LeadMyTeam extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel2)
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(DisplayButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(AddButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 141, Short.MAX_VALUE)
                         .addComponent(DeleteButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jComboBox2, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
@@ -276,8 +259,7 @@ public class LeadMyTeam extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 628, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(DisplayButton2)
-                        .addGap(18, 18, 18)
+                        .addGap(41, 41, 41)
                         .addComponent(AddButton2)
                         .addGap(18, 18, 18)
                         .addComponent(DeleteButton2)
@@ -314,6 +296,11 @@ public class LeadMyTeam extends javax.swing.JFrame {
         jLabel3.setText(" Sortowanie:");
 
         jComboBox3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "", "Nazwa Projektu", "ID" }));
+        jComboBox3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox3ActionPerformed(evt);
+            }
+        });
 
         jTable3.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -380,13 +367,25 @@ public class LeadMyTeam extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Projekty", jPanel3);
 
-        jMenu1.setText("File");
-        jMenuBar1.add(jMenu1);
+        jMenu1.setText("Plik");
+        jMenuBar.add(jMenu1);
 
-        jMenu2.setText("Edit");
-        jMenuBar1.add(jMenu2);
+        jMenu2.setText("Edytuj");
+        jMenuBar.add(jMenu2);
 
-        setJMenuBar(jMenuBar1);
+        jMenu3.setText("Pomoc");
+
+        jMenuItem1.setText("Autorzy");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        jMenu3.add(jMenuItem1);
+
+        jMenuBar.add(jMenu3);
+
+        setJMenuBar(jMenuBar);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -434,16 +433,6 @@ public class LeadMyTeam extends javax.swing.JFrame {
         dp.setVisible(true);
         OdswiezPracownikow();
     }//GEN-LAST:event_AddButtonActionPerformed
-
-    private void DisplayButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DisplayButtonActionPerformed
-        sqlConn.PobierzPracownikowZBazyDanych();
-        OdswiezPracownikow();
-    }//GEN-LAST:event_DisplayButtonActionPerformed
-
-    private void DisplayButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DisplayButton2ActionPerformed
-        sqlConn.PobierzUrlopy();
-        OdsiwezUrlopy();
-    }//GEN-LAST:event_DisplayButton2ActionPerformed
 
     private void AddButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddButton2ActionPerformed
         if (selectedContentPracownicy != null) {
@@ -516,11 +505,6 @@ public class LeadMyTeam extends javax.swing.JFrame {
         selectedContentProjekty = jTable3.getModel().getValueAt(jTable3.getSelectedRow(), 0).toString();
     }//GEN-LAST:event_jTable3MouseClicked
 
-    private void DisplayButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DisplayButton3ActionPerformed
-        sqlConn.PobierzProjekty();
-        OdswiezProjekty();
-    }//GEN-LAST:event_DisplayButton3ActionPerformed
-
     private void SzczegolyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SzczegolyButtonActionPerformed
         // TODO add your handling code here:
         // Do zrobienia szczególy projektów
@@ -530,6 +514,20 @@ public class LeadMyTeam extends javax.swing.JFrame {
         // uczestniczący w danym projekcie, czyli w szczególach trzeba po prostu w jakieś tabeli wyświetlic tych pracowników
         // z danego projektu.
     }//GEN-LAST:event_SzczegolyButtonActionPerformed
+
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        Autorzy a = new Autorzy();
+        a.setVisible(true);
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    private void DisplayButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DisplayButton3ActionPerformed
+        sqlConn.PobierzProjekty();
+        OdswiezProjekty();
+    }//GEN-LAST:event_DisplayButton3ActionPerformed
+
+    private void jComboBox3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox3ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBox3ActionPerformed
 
     public void OdswiezPracownikow() {
         String pracownicy = "";
@@ -613,8 +611,6 @@ public class LeadMyTeam extends javax.swing.JFrame {
     private javax.swing.JButton DeleteButton;
     private javax.swing.JButton DeleteButton2;
     private javax.swing.JButton DeleteButton3;
-    private javax.swing.JButton DisplayButton;
-    private javax.swing.JButton DisplayButton2;
     private javax.swing.JButton DisplayButton3;
     private javax.swing.JButton SzczegolyButton;
     private javax.swing.JComboBox<String> jComboBox2;
@@ -625,7 +621,8 @@ public class LeadMyTeam extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenu jMenu3;
+    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;

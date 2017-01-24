@@ -1,13 +1,15 @@
 package leadmyteam;
 
+import java.sql.Date;
 import javax.swing.JOptionPane;
+import java.time.*;
 
 public class DodajProjekt extends javax.swing.JFrame {
 
     private LeadMyTeam leadMyTeam;
     private String nazwaProjektu;
-    private String dataRozp;
-    private String dataZak;
+    private Date dataRozp;
+    private Date dataZak;
     
     public DodajProjekt(LeadMyTeam lmt) {
         this.leadMyTeam = lmt;
@@ -111,12 +113,21 @@ public class DodajProjekt extends javax.swing.JFrame {
 
     private void AddProjectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddProjectButtonActionPerformed
         this.nazwaProjektu = NazwaProjektuTextField.getText();
-        this.dataRozp = StartDateChooser.getDateFormatString();
-        this.dataZak = KoniecDateChooser.getDateFormatString();
-        //TODO: sql, null
+        java.util.Date dataRoz = StartDateChooser.getDate();
+        this.dataRozp = new Date(dataRoz.getTime());
+        java.util.Date dataZakon = KoniecDateChooser.getDate();
+        this.dataZak = new Date(dataZakon.getTime());
         
-        this.dispose();
-        JOptionPane.showMessageDialog(null, "Dodano projekt "+nazwaProjektu);
+        if (leadMyTeam.sqlConn.znajdzProjektPoNazwie(nazwaProjektu) != null) {
+            JOptionPane.showMessageDialog(this, "Projekt " + nazwaProjektu + " już istnieje.");
+        } else {
+            leadMyTeam.sqlConn.DodajProjekt(nazwaProjektu, dataRozp, dataZak);
+            leadMyTeam.OdswiezProjekty();
+            this.dispose();
+            
+            JOptionPane.showMessageDialog(null, "Dodano projekt " + nazwaProjektu);
+        }
+        
     }//GEN-LAST:event_AddProjectButtonActionPerformed
 
     /**
