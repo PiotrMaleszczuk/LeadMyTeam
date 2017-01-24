@@ -14,7 +14,7 @@ public class UsunPracownika extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         setResizable(false);
         setDefaultCloseOperation(HIDE_ON_CLOSE);
-        setAlwaysOnTop(true);
+        //setAlwaysOnTop(true);
         pesel = content;
         peselLabel.setText(pesel + "  " + imie + "  " + nazwisko);
     }

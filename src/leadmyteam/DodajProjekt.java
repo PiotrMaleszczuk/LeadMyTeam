@@ -2,7 +2,6 @@ package leadmyteam;
 
 import java.sql.Date;
 import javax.swing.JOptionPane;
-import java.time.*;
 
 public class DodajProjekt extends javax.swing.JFrame {
 
@@ -11,13 +10,15 @@ public class DodajProjekt extends javax.swing.JFrame {
     private Date dataRozp;
     private Date dataZak;
     
+    private String uczestnik;
+    
     public DodajProjekt(LeadMyTeam lmt) {
         this.leadMyTeam = lmt;
         initComponents();
         setLocationRelativeTo(null);
         setResizable(false);
         setDefaultCloseOperation(HIDE_ON_CLOSE);
-        setAlwaysOnTop(true);
+        //setAlwaysOnTop(true);
     }
 
     /**
@@ -117,11 +118,14 @@ public class DodajProjekt extends javax.swing.JFrame {
         this.dataRozp = new Date(dataRoz.getTime());
         java.util.Date dataZakon = KoniecDateChooser.getDate();
         this.dataZak = new Date(dataZakon.getTime());
+        this.uczestnik = UczestnicyTextField.getText();
         
         if (leadMyTeam.sqlConn.znajdzProjektPoNazwie(nazwaProjektu) != null) {
             JOptionPane.showMessageDialog(this, "Projekt " + nazwaProjektu + " już istnieje.");
         } else {
             leadMyTeam.sqlConn.DodajProjekt(nazwaProjektu, dataRozp, dataZak);
+            leadMyTeam.sqlConn.DodajUczestnika(nazwaProjektu, uczestnik);
+            
             leadMyTeam.OdswiezProjekty();
             this.dispose();
             

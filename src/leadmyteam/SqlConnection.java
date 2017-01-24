@@ -1,12 +1,9 @@
 package leadmyteam;
 
-import java.io.Console;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Collections;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class SqlConnection {
 
@@ -472,6 +469,19 @@ public class SqlConnection {
         }
         
         Projekty.add(new Projekt(PobierzIdProjektuZBazyDanych(nazwaProjektu),nazwaProjektu, dataZakonczenia, dataRozpoczecia));
+    }
+    
+    public void DodajUczestnika(String nazwaProjektu, String pesel){
+        try {
+            String SQL = "INSERT INTO UczestnicyProjektu VALUES('" + pesel + "','" + znajdzProjektPoNazwie(nazwaProjektu) + "')";
+
+            stmt = conn.createStatement();
+            stmt.executeUpdate(SQL);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        
+        znajdzProjektPoNazwie(nazwaProjektu).uczestnicyProjektu.add(znajdzPracownika(pesel));
     }
 
     private int PobierzIdProjektuZBazyDanych(String nazwa) {

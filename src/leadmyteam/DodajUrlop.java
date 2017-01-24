@@ -17,7 +17,7 @@ public class DodajUrlop extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         setResizable(false);
         setDefaultCloseOperation(HIDE_ON_CLOSE);
-        setAlwaysOnTop(true);
+        //setAlwaysOnTop(true);
     }
 
     public DodajUrlop(LeadMyTeam lmt, String content) {

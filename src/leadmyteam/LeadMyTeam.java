@@ -1,13 +1,5 @@
 package leadmyteam;
 
-import java.awt.FlowLayout;
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.event.TableModelEvent;
@@ -102,8 +94,11 @@ public class LeadMyTeam extends javax.swing.JFrame {
         SzczegolyButton = new javax.swing.JButton();
         javax.swing.JMenuBar jMenuBar = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
+        jMenuItem3 = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         jMenu3 = new javax.swing.JMenu();
+        jMenuItem4 = new javax.swing.JMenuItem();
         jMenuItem1 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -295,7 +290,7 @@ public class LeadMyTeam extends javax.swing.JFrame {
 
         jLabel3.setText(" Sortowanie:");
 
-        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "", "Nazwa Projektu", "ID" }));
+        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "", "Nazwa", "ID" }));
         jComboBox3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBox3ActionPerformed(evt);
@@ -368,12 +363,32 @@ public class LeadMyTeam extends javax.swing.JFrame {
         jTabbedPane1.addTab("Projekty", jPanel3);
 
         jMenu1.setText("Plik");
+
+        jMenuItem3.setText("Pobierz bazę danych");
+        jMenu1.add(jMenuItem3);
+
+        jMenuItem2.setText("Exit");
+        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem2ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem2);
+
         jMenuBar.add(jMenu1);
 
         jMenu2.setText("Edytuj");
         jMenuBar.add(jMenu2);
 
         jMenu3.setText("Pomoc");
+
+        jMenuItem4.setText("O Programie");
+        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem4ActionPerformed(evt);
+            }
+        });
+        jMenu3.add(jMenuItem4);
 
         jMenuItem1.setText("Autorzy");
         jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
@@ -506,6 +521,8 @@ public class LeadMyTeam extends javax.swing.JFrame {
     }//GEN-LAST:event_jTable3MouseClicked
 
     private void SzczegolyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SzczegolyButtonActionPerformed
+        Szczegoly s = new Szczegoly(this);
+        s.setVisible(true);
         // TODO add your handling code here:
         // Do zrobienia szczególy projektów
         // Najlepiej jako nowe okno, czyli trzeba zrobić nowy layout
@@ -526,8 +543,27 @@ public class LeadMyTeam extends javax.swing.JFrame {
     }//GEN-LAST:event_DisplayButton3ActionPerformed
 
     private void jComboBox3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox3ActionPerformed
-        // TODO add your handling code here:
+        switch (jComboBox3.getSelectedItem().toString()) {
+            case "Nazwa":
+                sqlConn.sortujProjektyPoNazwie();
+                OdswiezProjekty();
+                break;
+
+            case "ID":
+                sqlConn.sortujProjektyPoId();
+                OdswiezProjekty();
+                break;
+        }
     }//GEN-LAST:event_jComboBox3ActionPerformed
+
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+        dispose();
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
+
+    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
+        About a = new About();
+        a.setVisible(true);
+    }//GEN-LAST:event_jMenuItem4ActionPerformed
 
     public void OdswiezPracownikow() {
         String pracownicy = "";
@@ -623,6 +659,9 @@ public class LeadMyTeam extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;

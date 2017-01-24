@@ -34,7 +34,8 @@ public class Projekt {
     Projekt(String nazwaProjektu, Date dataZakonczenia, Date dataRozpoczecia) {
         this.nazwaProjektu = nazwaProjektu;
         this.dataOddania = dataOddania;
-        this.dataRozpoczecia = dataRozpoczecia;}
+        this.dataRozpoczecia = dataRozpoczecia;
+    }
     
     public Object[] PobierzObiekt(){
         Object[] dane = {idProjektu, nazwaProjektu, dataOddania, dataRozpoczecia};

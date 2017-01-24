@@ -13,7 +13,7 @@ public class UsunUrlop extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         setResizable(false);
         setDefaultCloseOperation(HIDE_ON_CLOSE);
-        setAlwaysOnTop(true);
+        //setAlwaysOnTop(true);
         pesel = content;
         informacjeLabel.setText(pesel + "  " + imie + "  " + nazwisko);
     }

@@ -1,7 +1,5 @@
 package leadmyteam;
 
-import javax.swing.JButton;
-
 public class Pracownik implements Comparable<Pracownik>{
     
     public int dlugosc = 11;
