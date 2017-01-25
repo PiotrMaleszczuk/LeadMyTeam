@@ -37,7 +37,7 @@ public class LeadMyTeam extends javax.swing.JFrame {
         "Nazwisko",
         "Data Rozpoczecia",
         "Data Zakonczenia"};
-    
+
     String[] ProjektyColumnsNames = {
         "ID Projektu",
         "Nazwa Projektu",
@@ -90,7 +90,6 @@ public class LeadMyTeam extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable();
         jPanel3 = new javax.swing.JPanel();
-        DisplayButton3 = new javax.swing.JButton();
         AddButton3 = new javax.swing.JButton();
         DeleteButton3 = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
@@ -100,6 +99,7 @@ public class LeadMyTeam extends javax.swing.JFrame {
         SzczegolyButton = new javax.swing.JButton();
         javax.swing.JMenuBar jMenuBar = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
+        ZaladujPonownieZBazy = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
         jMenuItem5 = new javax.swing.JMenuItem();
         jMenuItem6 = new javax.swing.JMenuItem();
@@ -276,13 +276,6 @@ public class LeadMyTeam extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Urlopy", jPanel2);
 
-        DisplayButton3.setText("Odśwież");
-        DisplayButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                DisplayButton3ActionPerformed(evt);
-            }
-        });
-
         AddButton3.setText("Dodaj projekt");
         AddButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -339,7 +332,6 @@ public class LeadMyTeam extends javax.swing.JFrame {
                 .addGap(21, 21, 21)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel3)
-                    .addComponent(DisplayButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(AddButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(DeleteButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jComboBox3, 0, 141, Short.MAX_VALUE)
@@ -355,8 +347,7 @@ public class LeadMyTeam extends javax.swing.JFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 628, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(DisplayButton3)
-                        .addGap(18, 18, 18)
+                        .addGap(41, 41, 41)
                         .addComponent(AddButton3)
                         .addGap(18, 18, 18)
                         .addComponent(DeleteButton3)
@@ -372,6 +363,14 @@ public class LeadMyTeam extends javax.swing.JFrame {
         jTabbedPane1.addTab("Projekty", jPanel3);
 
         jMenu1.setText("Plik");
+
+        ZaladujPonownieZBazy.setText("Załaduj ponownie z bazy");
+        ZaladujPonownieZBazy.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ZaladujPonownieZBazyActionPerformed(evt);
+            }
+        });
+        jMenu1.add(ZaladujPonownieZBazy);
 
         jMenuItem3.setText("Wyeksportuj pracownikow");
         jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
@@ -490,8 +489,8 @@ public class LeadMyTeam extends javax.swing.JFrame {
     private void DeleteButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteButton2ActionPerformed
         if (selectedContentUrlopy != null) {
             UsunUrlop uu = new UsunUrlop(this, selectedContentUrlopy,
-            sqlConn.znajdzUrlop(selectedContentUrlopy).PobierzImie(),
-            sqlConn.znajdzUrlop(selectedContentUrlopy).PobierzNazwisko());
+                    sqlConn.znajdzUrlop(selectedContentUrlopy).PobierzImie(),
+                    sqlConn.znajdzUrlop(selectedContentUrlopy).PobierzNazwisko());
             selectedContentUrlopy = null;
             uu.setVisible(true);
         } else {
@@ -507,16 +506,22 @@ public class LeadMyTeam extends javax.swing.JFrame {
     }//GEN-LAST:event_AddButton3ActionPerformed
 
     private void DeleteButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteButton3ActionPerformed
-        UsunProjekt up = new UsunProjekt(this);
+        UsunProjekt up = new UsunProjekt(this, Integer.parseInt(selectedContentProjekty));
         up.setVisible(true);
         OdswiezProjekty();
     }//GEN-LAST:event_DeleteButton3ActionPerformed
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
+        if (jTable1.getSelectedRowCount() == 0) {
+            return;
+        }
         selectedContentPracownicy = jTable1.getModel().getValueAt(jTable1.getSelectedRow(), 0).toString();
     }//GEN-LAST:event_jTable1MouseClicked
 
     private void jTable2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable2MouseClicked
+        if (jTable2.getSelectedRowCount() == 0) {
+            return;
+        }
         selectedContentUrlopy = jTable2.getModel().getValueAt(jTable2.getSelectedRow(), 0).toString();
     }//GEN-LAST:event_jTable2MouseClicked
 
@@ -543,12 +548,19 @@ public class LeadMyTeam extends javax.swing.JFrame {
     }//GEN-LAST:event_jTable2FocusLost
 
     private void jTable3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable3MouseClicked
+        if (jTable3.getSelectedRowCount() == 0) {
+            return;
+        }
         selectedContentProjekty = jTable3.getModel().getValueAt(jTable3.getSelectedRow(), 0).toString();
     }//GEN-LAST:event_jTable3MouseClicked
 
     private void SzczegolyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SzczegolyButtonActionPerformed
-        Szczegoly s = new Szczegoly(this);
-        s.setVisible(true);
+        if (selectedContentProjekty != null) {
+            Szczegoly s = new Szczegoly(this, sqlConn.znajdzProjektPoID(Integer.parseInt(selectedContentProjekty)));
+            s.setVisible(true);
+        } else {
+            JOptionPane.showMessageDialog(this, "Nie zaznaczono zadnego Projektu");
+        }
         // TODO add your handling code here:
         // Do zrobienia szczególy projektów
         // Tak jak w poprzednich przypadkach stworzyłem listę projekty która składa się z klas Projekt
@@ -561,11 +573,6 @@ public class LeadMyTeam extends javax.swing.JFrame {
         Autorzy a = new Autorzy();
         a.setVisible(true);
     }//GEN-LAST:event_jMenuItem1ActionPerformed
-
-    private void DisplayButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DisplayButton3ActionPerformed
-        sqlConn.PobierzProjekty();
-        OdswiezProjekty();
-    }//GEN-LAST:event_DisplayButton3ActionPerformed
 
     private void jComboBox3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox3ActionPerformed
         switch (jComboBox3.getSelectedItem().toString()) {
@@ -592,87 +599,97 @@ public class LeadMyTeam extends javax.swing.JFrame {
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
         jFileChooserSave.setSelectedFile(new File("pracownicy.xls"));
-        jFileChooserSave.setFileFilter(new FileNameExtensionFilter("xml file","xml"));
+        jFileChooserSave.setFileFilter(new FileNameExtensionFilter("xml file", "xml"));
         int odpowiedz = jFileChooserSave.showSaveDialog(this);
-            if (odpowiedz == jFileChooserSave.APPROVE_OPTION) {
-                File file = jFileChooserSave.getSelectedFile();
-                try {
-                    TableModel model = jTable1.getModel();
-                    
-                    FileWriter output = new FileWriter(file);
-                    
-                    for(int i = 0; i <model.getColumnCount(); i++){
-                        output.write(model.getColumnName(i) + "\t");
+        if (odpowiedz == jFileChooserSave.APPROVE_OPTION) {
+            File file = jFileChooserSave.getSelectedFile();
+            try {
+                TableModel model = jTable1.getModel();
+
+                FileWriter output = new FileWriter(file);
+
+                for (int i = 0; i < model.getColumnCount(); i++) {
+                    output.write(model.getColumnName(i) + "\t");
+                }
+                output.write("\n");
+                for (int k = 0; k < model.getRowCount(); k++) {
+                    for (int j = 0; j < model.getColumnCount(); j++) {
+                        output.write(model.getValueAt(k, j).toString() + "\t");
                     }
                     output.write("\n");
-                    for(int k=0;k<model.getRowCount();k++) {
-                        for(int j=0;j<model.getColumnCount();j++) {
-                            output.write(model.getValueAt(k,j).toString()+"\t");
-                        }
-                        output.write("\n");
-                    }
-                    output.close();
-                } catch(Exception e) {
-                    e.printStackTrace();
                 }
+                output.close();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+        }
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
         jFileChooserSave.setSelectedFile(new File("urlopy.xls"));
-        jFileChooserSave.setFileFilter(new FileNameExtensionFilter("xml file","xml"));
+        jFileChooserSave.setFileFilter(new FileNameExtensionFilter("xml file", "xml"));
         int odpowiedz = jFileChooserSave.showSaveDialog(this);
-            if (odpowiedz == jFileChooserSave.APPROVE_OPTION) {
-                File file = jFileChooserSave.getSelectedFile();
-                try {
-                    TableModel model = jTable2.getModel();
-                    
-                    FileWriter output = new FileWriter(file);
-                    
-                    for(int i = 0; i <model.getColumnCount(); i++){
-                        output.write(model.getColumnName(i) + "\t");
+        if (odpowiedz == jFileChooserSave.APPROVE_OPTION) {
+            File file = jFileChooserSave.getSelectedFile();
+            try {
+                TableModel model = jTable2.getModel();
+
+                FileWriter output = new FileWriter(file);
+
+                for (int i = 0; i < model.getColumnCount(); i++) {
+                    output.write(model.getColumnName(i) + "\t");
+                }
+                output.write("\n");
+                for (int k = 0; k < model.getRowCount(); k++) {
+                    for (int j = 0; j < model.getColumnCount(); j++) {
+                        output.write(model.getValueAt(k, j).toString() + "\t");
                     }
                     output.write("\n");
-                    for(int k=0;k<model.getRowCount();k++) {
-                        for(int j=0;j<model.getColumnCount();j++) {
-                            output.write(model.getValueAt(k,j).toString()+"\t");
-                        }
-                        output.write("\n");
-                    }
-                    output.close();
-                } catch(Exception e) {
-                    e.printStackTrace();
                 }
+                output.close();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+        }
     }//GEN-LAST:event_jMenuItem5ActionPerformed
 
     private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
         jFileChooserSave.setSelectedFile(new File("projekty.xls"));
-        jFileChooserSave.setFileFilter(new FileNameExtensionFilter("xml file","xml"));
+        jFileChooserSave.setFileFilter(new FileNameExtensionFilter("xml file", "xml"));
         int odpowiedz = jFileChooserSave.showSaveDialog(this);
-            if (odpowiedz == jFileChooserSave.APPROVE_OPTION) {
-                File file = jFileChooserSave.getSelectedFile();
-                try {
-                    TableModel model = jTable3.getModel();
-                    
-                    FileWriter output = new FileWriter(file);
-                    
-                    for(int i = 0; i <model.getColumnCount(); i++){
-                        output.write(model.getColumnName(i) + "\t");
+        if (odpowiedz == jFileChooserSave.APPROVE_OPTION) {
+            File file = jFileChooserSave.getSelectedFile();
+            try {
+                TableModel model = jTable3.getModel();
+
+                FileWriter output = new FileWriter(file);
+
+                for (int i = 0; i < model.getColumnCount(); i++) {
+                    output.write(model.getColumnName(i) + "\t");
+                }
+                output.write("\n");
+                for (int k = 0; k < model.getRowCount(); k++) {
+                    for (int j = 0; j < model.getColumnCount(); j++) {
+                        output.write(model.getValueAt(k, j).toString() + "\t");
                     }
                     output.write("\n");
-                    for(int k=0;k<model.getRowCount();k++) {
-                        for(int j=0;j<model.getColumnCount();j++) {
-                            output.write(model.getValueAt(k,j).toString()+"\t");
-                        }
-                        output.write("\n");
-                    }
-                    output.close();
-                } catch(Exception e) {
-                    e.printStackTrace();
                 }
+                output.close();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+        }
     }//GEN-LAST:event_jMenuItem6ActionPerformed
+
+    private void ZaladujPonownieZBazyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ZaladujPonownieZBazyActionPerformed
+        sqlConn = new SqlConnection();
+        sqlConn.PobierzPracownikowZBazyDanych();
+        sqlConn.PobierzUrlopyZBazyDanych();
+        sqlConn.PobierzProjektyZBazyDanych();
+        OdswiezPracownikow();
+        OdsiwezUrlopy();
+        OdswiezProjekty();
+    }//GEN-LAST:event_ZaladujPonownieZBazyActionPerformed
 
     public void OdswiezPracownikow() {
         String pracownicy = "";
@@ -708,8 +725,8 @@ public class LeadMyTeam extends javax.swing.JFrame {
     public void OdsiwezUrlopy() {
         jTable2.setModel(new DefaultTableModel(sqlConn.PobierzUrlopy(), UrlopyColumnsNames));
     }
-    
-    public void OdswiezProjekty(){
+
+    public void OdswiezProjekty() {
         jTable3.setModel(new DefaultTableModel(sqlConn.PobierzProjekty(), ProjektyColumnsNames));
     }
 
@@ -756,8 +773,8 @@ public class LeadMyTeam extends javax.swing.JFrame {
     private javax.swing.JButton DeleteButton;
     private javax.swing.JButton DeleteButton2;
     private javax.swing.JButton DeleteButton3;
-    private javax.swing.JButton DisplayButton3;
     private javax.swing.JButton SzczegolyButton;
+    private javax.swing.JMenuItem ZaladujPonownieZBazy;
     private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JComboBox<String> jComboBox3;
     private javax.swing.JFileChooser jFileChooserSave;

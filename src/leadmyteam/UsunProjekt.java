@@ -2,19 +2,20 @@ package leadmyteam;
 
 import javax.swing.JOptionPane;
 
-
 public class UsunProjekt extends javax.swing.JFrame {
 
-   private LeadMyTeam leadMyTeam;
-   private String nazwaProjektu;
-   
-    public UsunProjekt(LeadMyTeam lmt) {
+    private LeadMyTeam leadMyTeam;
+    private int id;
+
+    public UsunProjekt(LeadMyTeam lmt, int idProjektu) {
         this.leadMyTeam = lmt;
+        this.id = idProjektu;
         initComponents();
         setLocationRelativeTo(null);
         setResizable(false);
         setDefaultCloseOperation(HIDE_ON_CLOSE);
         //setAlwaysOnTop(true);
+        ProjektInformacje.setText(lmt.sqlConn.znajdzProjektPoID(id).PobierzNazweProjektu());
     }
 
     /**
@@ -27,13 +28,14 @@ public class UsunProjekt extends javax.swing.JFrame {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        UsunTextField = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
+        anulujButton = new javax.swing.JButton();
+        ProjektInformacje = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Usuń projekt");
 
-        jLabel1.setText("Nazwa projektu");
+        jLabel1.setText("Czy napewno chcesz usunac projekt:");
 
         jButton1.setText("Usuń");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -42,49 +44,68 @@ public class UsunProjekt extends javax.swing.JFrame {
             }
         });
 
+        anulujButton.setText("Anuluj");
+        anulujButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                anulujButtonActionPerformed(evt);
+            }
+        });
+
+        ProjektInformacje.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        ProjektInformacje.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        ProjektInformacje.setText("Informacja o Projekcie");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(34, 34, 34)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButton1)
+                .addGap(58, 58, 58)
+                .addComponent(jLabel1)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(27, 27, 27)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(ProjektInformacje, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(UsunTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(34, Short.MAX_VALUE))
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 84, Short.MAX_VALUE)
+                        .addComponent(anulujButton, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(32, 32, 32))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(23, 23, 23)
+                .addContainerGap()
+                .addComponent(jLabel1)
+                .addGap(18, 18, 18)
+                .addComponent(ProjektInformacje, javax.swing.GroupLayout.DEFAULT_SIZE, 27, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(UsunTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jButton1)
+                    .addComponent(anulujButton))
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        this.nazwaProjektu = UsunTextField.getText();
-        
-        if (leadMyTeam.sqlConn.znajdzProjektPoNazwie(nazwaProjektu) != null) {
-            leadMyTeam.sqlConn.usunUczestnikow(nazwaProjektu);
-            leadMyTeam.sqlConn.usunProjekt(nazwaProjektu);
-            
-            leadMyTeam.OdswiezProjekty();
-            this.dispose();
-            JOptionPane.showMessageDialog(null, "Usunięto projekt " + nazwaProjektu);
-        } else {
-            JOptionPane.showMessageDialog(null, "Projekt " + nazwaProjektu + "nie istnieje");
-        }
+
+        String nazwaProjektu = leadMyTeam.sqlConn.znajdzProjektPoID(id).PobierzNazweProjektu();
+        leadMyTeam.sqlConn.usunUczestnikow(nazwaProjektu);
+        leadMyTeam.sqlConn.usunProjekt(nazwaProjektu);
+
+        leadMyTeam.OdswiezProjekty();
+        this.dispose();
+        JOptionPane.showMessageDialog(null, "Usunięto projekt " + nazwaProjektu);
+
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void anulujButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_anulujButtonActionPerformed
+        // TODO add your handling code here:
+        this.dispose();
+    }//GEN-LAST:event_anulujButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -121,7 +142,8 @@ public class UsunProjekt extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField UsunTextField;
+    private javax.swing.JLabel ProjektInformacje;
+    private javax.swing.JButton anulujButton;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables

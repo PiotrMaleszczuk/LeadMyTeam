@@ -467,12 +467,12 @@ public class SqlConnection {
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-        
-        Projekty.add(new Projekt(PobierzIdProjektuZBazyDanych(nazwaProjektu),nazwaProjektu, dataZakonczenia, dataRozpoczecia));
+
+        Projekty.add(new Projekt(PobierzIdProjektuZBazyDanych(nazwaProjektu), nazwaProjektu, dataZakonczenia, dataRozpoczecia));
     }
-    
-    public void DodajUczestnika(String nazwaProjektu, String[] pesel){
-        for(String x : pesel){
+
+    public void DodajUczestnika(String nazwaProjektu, String[] pesel) {
+        for (String x : pesel) {
             try {
                 String SQL = "INSERT INTO UczestnicyProjektu VALUES('" + x + "','" + znajdzProjektPoNazwie(nazwaProjektu).PobierzIdProjektu() + "')";
                 stmt = conn.createStatement();
@@ -483,8 +483,8 @@ public class SqlConnection {
             znajdzProjektPoNazwie(nazwaProjektu).uczestnicyProjektu.add(znajdzPracownika(x));
         }
     }
-    
-    public void usunProjekt(String nazwaProjektu) {  
+
+    public void usunProjekt(String nazwaProjektu) {
         String SQL = "DELETE FROM Projekt WHERE NazwaProjektu='" + nazwaProjektu + "'";
 
         try {
@@ -496,25 +496,29 @@ public class SqlConnection {
         Projekty.remove(znajdzProjektPoNazwie(nazwaProjektu));
     }
 
-    public void usunUczestnikow(String nazwaProjektu){
-        for (int i=0; i<znajdzProjektPoNazwie(nazwaProjektu).uczestnicyProjektu.size(); i++){
-           
-            Pracownik tmp = znajdzProjektPoNazwie(nazwaProjektu).uczestnicyProjektu.get(i);
-      
-            String SQL = "DELETE FROM UczestnicyProjektu WHERE Pesel='" +  tmp.PobierzPesel() + "' AND IDProjektu='" + znajdzProjektPoNazwie(nazwaProjektu).PobierzIdProjektu() + "'";
-            try {
-                stmt = conn.createStatement();
-                stmt.execute(SQL);
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
+    public void usunUczestnika(String pesel, String idProjektu) {
+        String SQL = "DELETE FROM UczestnicyProjektu WHERE Pesel='" + pesel + "' AND IDProjektu='" + idProjektu + "'";
+        try {
+            stmt = conn.createStatement();
+            stmt.execute(SQL);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
     }
+
+    public void usunUczestnikow(String nazwaProjektu) {
+        for (int i = 0; i < znajdzProjektPoNazwie(nazwaProjektu).uczestnicyProjektu.size(); i++) {
+
+            Pracownik tmp = znajdzProjektPoNazwie(nazwaProjektu).uczestnicyProjektu.get(i);
+            usunUczestnika(tmp.PobierzPesel(), String.valueOf(znajdzProjektPoNazwie(nazwaProjektu).PobierzIdProjektu()));
+        }
+    }
+
     private int PobierzIdProjektuZBazyDanych(String nazwa) {
         int id = 0;
         try {
-            String SQL = "Select p.IDProjektu from Projekt p\n" +
-                         "WHERE p.NazwaProjektu = '" + nazwa + "'";
+            String SQL = "Select p.IDProjektu from Projekt p\n"
+                    + "WHERE p.NazwaProjektu = '" + nazwa + "'";
 
             stmt = conn.createStatement();
             rs = stmt.executeQuery(SQL);

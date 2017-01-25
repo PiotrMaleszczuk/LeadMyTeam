@@ -18,6 +18,14 @@
             <Property name="text" type="java.lang.String" value="Plik"/>
           </Properties>
           <SubComponents>
+            <MenuItem class="javax.swing.JMenuItem" name="ZaladujPonownieZBazy">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Za&#x142;aduj ponownie z bazy"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ZaladujPonownieZBazyActionPerformed"/>
+              </Events>
+            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItem3">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Wyeksportuj pracownikow"/>
@@ -362,7 +370,6 @@
                       <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
-                          <Component id="DisplayButton3" max="32767" attributes="0"/>
                           <Component id="AddButton3" max="32767" attributes="0"/>
                           <Component id="DeleteButton3" max="32767" attributes="0"/>
                           <Component id="jComboBox3" alignment="0" pref="141" max="32767" attributes="0"/>
@@ -381,8 +388,7 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="jScrollPane3" min="-2" pref="628" max="-2" attributes="0"/>
                           <Group type="102" attributes="0">
-                              <Component id="DisplayButton3" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="41" max="-2" attributes="0"/>
                               <Component id="AddButton3" min="-2" max="-2" attributes="0"/>
                               <EmptySpace type="separate" max="-2" attributes="0"/>
                               <Component id="DeleteButton3" min="-2" max="-2" attributes="0"/>
@@ -400,14 +406,6 @@
             </DimensionLayout>
           </Layout>
           <SubComponents>
-            <Component class="javax.swing.JButton" name="DisplayButton3">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Od&#x15b;wie&#x17c;"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="DisplayButton3ActionPerformed"/>
-              </Events>
-            </Component>
             <Component class="javax.swing.JButton" name="AddButton3">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Dodaj projekt"/>

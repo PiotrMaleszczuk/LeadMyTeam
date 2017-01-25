@@ -3,6 +3,7 @@ package leadmyteam;
 public class Pracownik implements Comparable<Pracownik>{
     
     public int dlugosc = 11;
+    public int dlugoscDoProjektow = 3;
     
     private final String pesel;
     private final String imie;
@@ -44,6 +45,11 @@ public class Pracownik implements Comparable<Pracownik>{
     
     public Object[] PobierzObiekt(){
         Object[] dane = {pesel, imie, nazwisko, adres, miasto, kodPocztowy, kraj, nazwaStanowiska, liczbaGodzin, GetWyplata()};
+        return dane;
+    }
+    
+    public Object[] PobierzObiektDoProjektow(){
+        Object[] dane = {pesel, imie, nazwisko};
         return dane;
     }
     
