@@ -11,6 +11,7 @@ public class DodajProjekt extends javax.swing.JFrame {
     private Date dataZak;
     
     private String uczestnik;
+    private String[] tokens = null;
     
     public DodajProjekt(LeadMyTeam lmt) {
         this.leadMyTeam = lmt;
@@ -120,18 +121,34 @@ public class DodajProjekt extends javax.swing.JFrame {
         this.dataZak = new Date(dataZakon.getTime());
         this.uczestnik = UczestnicyTextField.getText();
         
+        if (dataZak.getTime()-dataRoz.getTime()<0){
+            StartDateChooser.setDate(null);
+            KoniecDateChooser.setDate(null);
+            JOptionPane.showMessageDialog(null, "Nie możemy cofać się w czasie");
+            return;
+        }
+            
+        tokens = uczestnik.split(",");
+        
         if (leadMyTeam.sqlConn.znajdzProjektPoNazwie(nazwaProjektu) != null) {
             JOptionPane.showMessageDialog(this, "Projekt " + nazwaProjektu + " już istnieje.");
+            return;
         } else {
-            leadMyTeam.sqlConn.DodajProjekt(nazwaProjektu, dataRozp, dataZak);
-            leadMyTeam.sqlConn.DodajUczestnika(nazwaProjektu, uczestnik);
-            
-            leadMyTeam.OdswiezProjekty();
-            this.dispose();
-            
-            JOptionPane.showMessageDialog(null, "Dodano projekt " + nazwaProjektu);
+            for(String x : tokens){
+                if(leadMyTeam.sqlConn.znajdzPracownika(x) != null){
+
+                    leadMyTeam.sqlConn.DodajProjekt(nazwaProjektu, dataRozp, dataZak);
+                    leadMyTeam.sqlConn.DodajUczestnika(nazwaProjektu, tokens);
+
+                    leadMyTeam.OdswiezProjekty();
+                    this.dispose();
+
+                    JOptionPane.showMessageDialog(null, "Dodano projekt " + nazwaProjektu);
+                } else {
+                    JOptionPane.showMessageDialog(null, "Pracownik " + x + " nie istnieje");
+                }
+            }
         }
-        
     }//GEN-LAST:event_AddProjectButtonActionPerformed
 
     /**

@@ -471,19 +471,45 @@ public class SqlConnection {
         Projekty.add(new Projekt(PobierzIdProjektuZBazyDanych(nazwaProjektu),nazwaProjektu, dataZakonczenia, dataRozpoczecia));
     }
     
-    public void DodajUczestnika(String nazwaProjektu, String pesel){
-        try {
-            String SQL = "INSERT INTO UczestnicyProjektu VALUES('" + pesel + "','" + znajdzProjektPoNazwie(nazwaProjektu) + "')";
+    public void DodajUczestnika(String nazwaProjektu, String[] pesel){
+        for(String x : pesel){
+            try {
+                String SQL = "INSERT INTO UczestnicyProjektu VALUES('" + x + "','" + znajdzProjektPoNazwie(nazwaProjektu).PobierzIdProjektu() + "')";
+                stmt = conn.createStatement();
+                stmt.executeUpdate(SQL);
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+            znajdzProjektPoNazwie(nazwaProjektu).uczestnicyProjektu.add(znajdzPracownika(x));
+        }
+    }
+    
+    public void usunProjekt(String nazwaProjektu) {  
+        String SQL = "DELETE FROM Projekt WHERE NazwaProjektu='" + nazwaProjektu + "'";
 
+        try {
             stmt = conn.createStatement();
-            stmt.executeUpdate(SQL);
+            stmt.execute(SQL);
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-        
-        znajdzProjektPoNazwie(nazwaProjektu).uczestnicyProjektu.add(znajdzPracownika(pesel));
+        Projekty.remove(znajdzProjektPoNazwie(nazwaProjektu));
     }
 
+    public void usunUczestnikow(String nazwaProjektu){
+        for (int i=0; i<znajdzProjektPoNazwie(nazwaProjektu).uczestnicyProjektu.size(); i++){
+           
+            Pracownik tmp = znajdzProjektPoNazwie(nazwaProjektu).uczestnicyProjektu.get(i);
+      
+            String SQL = "DELETE FROM UczestnicyProjektu WHERE Pesel='" +  tmp.PobierzPesel() + "' AND IDProjektu='" + znajdzProjektPoNazwie(nazwaProjektu).PobierzIdProjektu() + "'";
+            try {
+                stmt = conn.createStatement();
+                stmt.execute(SQL);
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
     private int PobierzIdProjektuZBazyDanych(String nazwa) {
         int id = 0;
         try {

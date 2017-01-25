@@ -115,13 +115,19 @@ public class DodajUrlop extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void wyslijButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_wyslijButtonActionPerformed
-        //TODO: obsluga null
         this.pesel = peselTextField.getText();
         java.util.Date dataRoz = jDateChooser1.getDate();
         this.dataRozpoczecia = new Date(dataRoz.getTime());
         java.util.Date dataZakon = jDateChooser4.getDate();
         this.dataZakonczenia = new Date(dataZakon.getTime());
 
+        if (dataZakonczenia.getTime()-dataRozpoczecia.getTime()<0){
+            jDateChooser1.setDate(null);
+            jDateChooser4.setDate(null);
+            JOptionPane.showMessageDialog(null, "Nie możemy cofać się w czasie");
+            return;
+        }
+        
         if (leadMyTeam.sqlConn.znajdzPracownika(pesel) == null) {
             JOptionPane.showMessageDialog(this, "Pracownik o podanym peselu (" + pesel + ") nie istnieje.");
         } else {

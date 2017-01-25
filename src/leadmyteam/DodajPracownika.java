@@ -182,7 +182,6 @@ public class DodajPracownika extends javax.swing.JFrame {
 
     private void wyslijButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_wyslijButtonActionPerformed
         try {
-            //TODO obsluga null
             this.pesel = peselTextField.getText();
             this.imie = imieTextField.getText();
             this.nazwisko = nazwiskoTextField.getText();
@@ -215,7 +214,7 @@ public class DodajPracownika extends javax.swing.JFrame {
     }//GEN-LAST:event_wyslijButtonActionPerformed
 
     private void peselTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_peselTextFieldActionPerformed
-        // TODO add your handling code here:
+
     }//GEN-LAST:event_peselTextFieldActionPerformed
 
     /**

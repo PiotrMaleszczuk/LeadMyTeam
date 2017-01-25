@@ -73,9 +73,17 @@ public class UsunProjekt extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         this.nazwaProjektu = UsunTextField.getText();
-        //TODO: sql, null
-        this.dispose();
-        JOptionPane.showMessageDialog(null, "Usunięto projekt "+nazwaProjektu);
+        
+        if (leadMyTeam.sqlConn.znajdzProjektPoNazwie(nazwaProjektu) != null) {
+            leadMyTeam.sqlConn.usunUczestnikow(nazwaProjektu);
+            leadMyTeam.sqlConn.usunProjekt(nazwaProjektu);
+            
+            leadMyTeam.OdswiezProjekty();
+            this.dispose();
+            JOptionPane.showMessageDialog(null, "Usunięto projekt " + nazwaProjektu);
+        } else {
+            JOptionPane.showMessageDialog(null, "Projekt " + nazwaProjektu + "nie istnieje");
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**

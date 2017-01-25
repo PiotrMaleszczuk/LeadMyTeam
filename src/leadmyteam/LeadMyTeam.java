@@ -1,11 +1,17 @@
 package leadmyteam;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
+import javax.swing.table.TableModel;
 
 public class LeadMyTeam extends javax.swing.JFrame {
 
@@ -67,7 +73,7 @@ public class LeadMyTeam extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jFileChooser = new javax.swing.JFileChooser();
+        jFileChooserSave = new javax.swing.JFileChooser();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         AddButton = new javax.swing.JButton();
@@ -95,11 +101,14 @@ public class LeadMyTeam extends javax.swing.JFrame {
         javax.swing.JMenuBar jMenuBar = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem3 = new javax.swing.JMenuItem();
+        jMenuItem5 = new javax.swing.JMenuItem();
+        jMenuItem6 = new javax.swing.JMenuItem();
         jMenuItem2 = new javax.swing.JMenuItem();
-        jMenu2 = new javax.swing.JMenu();
         jMenu3 = new javax.swing.JMenu();
         jMenuItem4 = new javax.swing.JMenuItem();
         jMenuItem1 = new javax.swing.JMenuItem();
+
+        jFileChooserSave.setDialogType(javax.swing.JFileChooser.SAVE_DIALOG);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("LeadMyTeam");
@@ -364,8 +373,29 @@ public class LeadMyTeam extends javax.swing.JFrame {
 
         jMenu1.setText("Plik");
 
-        jMenuItem3.setText("Pobierz bazę danych");
+        jMenuItem3.setText("Wyeksportuj pracownikow");
+        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem3ActionPerformed(evt);
+            }
+        });
         jMenu1.add(jMenuItem3);
+
+        jMenuItem5.setText("Wyeksportuj urlopy");
+        jMenuItem5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem5ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem5);
+
+        jMenuItem6.setText("Wyeksportuj projekty");
+        jMenuItem6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem6ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem6);
 
         jMenuItem2.setText("Exit");
         jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
@@ -376,9 +406,6 @@ public class LeadMyTeam extends javax.swing.JFrame {
         jMenu1.add(jMenuItem2);
 
         jMenuBar.add(jMenu1);
-
-        jMenu2.setText("Edytuj");
-        jMenuBar.add(jMenu2);
 
         jMenu3.setText("Pomoc");
 
@@ -476,13 +503,13 @@ public class LeadMyTeam extends javax.swing.JFrame {
     private void AddButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddButton3ActionPerformed
         DodajProjekt dp = new DodajProjekt(this);
         dp.setVisible(true);
-        //TODO: Odzwiezanie
+        OdswiezProjekty();
     }//GEN-LAST:event_AddButton3ActionPerformed
 
     private void DeleteButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteButton3ActionPerformed
         UsunProjekt up = new UsunProjekt(this);
         up.setVisible(true);
-        //TODO: Odswiezanie
+        OdswiezProjekty();
     }//GEN-LAST:event_DeleteButton3ActionPerformed
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
@@ -508,15 +535,14 @@ public class LeadMyTeam extends javax.swing.JFrame {
     }//GEN-LAST:event_jComboBox2ActionPerformed
 
     private void jTable1FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTable1FocusLost
-        // TODO add your handling code here:
+
     }//GEN-LAST:event_jTable1FocusLost
 
     private void jTable2FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTable2FocusLost
-        // TODO add your handling code here:
+
     }//GEN-LAST:event_jTable2FocusLost
 
     private void jTable3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable3MouseClicked
-        // TODO add your handling code here:
         selectedContentProjekty = jTable3.getModel().getValueAt(jTable3.getSelectedRow(), 0).toString();
     }//GEN-LAST:event_jTable3MouseClicked
 
@@ -525,7 +551,6 @@ public class LeadMyTeam extends javax.swing.JFrame {
         s.setVisible(true);
         // TODO add your handling code here:
         // Do zrobienia szczególy projektów
-        // Najlepiej jako nowe okno, czyli trzeba zrobić nowy layout
         // Tak jak w poprzednich przypadkach stworzyłem listę projekty która składa się z klas Projekt
         // Projekt ma w sobie, ID, Nazwe, DateRozpoczecia, DateOddania oraz Liste (klasy) Procownik w której znajdują się pracownicy
         // uczestniczący w danym projekcie, czyli w szczególach trzeba po prostu w jakieś tabeli wyświetlic tych pracowników
@@ -564,6 +589,90 @@ public class LeadMyTeam extends javax.swing.JFrame {
         About a = new About();
         a.setVisible(true);
     }//GEN-LAST:event_jMenuItem4ActionPerformed
+
+    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
+        jFileChooserSave.setSelectedFile(new File("pracownicy.xls"));
+        jFileChooserSave.setFileFilter(new FileNameExtensionFilter("xml file","xml"));
+        int odpowiedz = jFileChooserSave.showSaveDialog(this);
+            if (odpowiedz == jFileChooserSave.APPROVE_OPTION) {
+                File file = jFileChooserSave.getSelectedFile();
+                try {
+                    TableModel model = jTable1.getModel();
+                    
+                    FileWriter output = new FileWriter(file);
+                    
+                    for(int i = 0; i <model.getColumnCount(); i++){
+                        output.write(model.getColumnName(i) + "\t");
+                    }
+                    output.write("\n");
+                    for(int k=0;k<model.getRowCount();k++) {
+                        for(int j=0;j<model.getColumnCount();j++) {
+                            output.write(model.getValueAt(k,j).toString()+"\t");
+                        }
+                        output.write("\n");
+                    }
+                    output.close();
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+            }
+    }//GEN-LAST:event_jMenuItem3ActionPerformed
+
+    private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
+        jFileChooserSave.setSelectedFile(new File("urlopy.xls"));
+        jFileChooserSave.setFileFilter(new FileNameExtensionFilter("xml file","xml"));
+        int odpowiedz = jFileChooserSave.showSaveDialog(this);
+            if (odpowiedz == jFileChooserSave.APPROVE_OPTION) {
+                File file = jFileChooserSave.getSelectedFile();
+                try {
+                    TableModel model = jTable2.getModel();
+                    
+                    FileWriter output = new FileWriter(file);
+                    
+                    for(int i = 0; i <model.getColumnCount(); i++){
+                        output.write(model.getColumnName(i) + "\t");
+                    }
+                    output.write("\n");
+                    for(int k=0;k<model.getRowCount();k++) {
+                        for(int j=0;j<model.getColumnCount();j++) {
+                            output.write(model.getValueAt(k,j).toString()+"\t");
+                        }
+                        output.write("\n");
+                    }
+                    output.close();
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+            }
+    }//GEN-LAST:event_jMenuItem5ActionPerformed
+
+    private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
+        jFileChooserSave.setSelectedFile(new File("projekty.xls"));
+        jFileChooserSave.setFileFilter(new FileNameExtensionFilter("xml file","xml"));
+        int odpowiedz = jFileChooserSave.showSaveDialog(this);
+            if (odpowiedz == jFileChooserSave.APPROVE_OPTION) {
+                File file = jFileChooserSave.getSelectedFile();
+                try {
+                    TableModel model = jTable3.getModel();
+                    
+                    FileWriter output = new FileWriter(file);
+                    
+                    for(int i = 0; i <model.getColumnCount(); i++){
+                        output.write(model.getColumnName(i) + "\t");
+                    }
+                    output.write("\n");
+                    for(int k=0;k<model.getRowCount();k++) {
+                        for(int j=0;j<model.getColumnCount();j++) {
+                            output.write(model.getValueAt(k,j).toString()+"\t");
+                        }
+                        output.write("\n");
+                    }
+                    output.close();
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+            }
+    }//GEN-LAST:event_jMenuItem6ActionPerformed
 
     public void OdswiezPracownikow() {
         String pracownicy = "";
@@ -651,17 +760,18 @@ public class LeadMyTeam extends javax.swing.JFrame {
     private javax.swing.JButton SzczegolyButton;
     private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JComboBox<String> jComboBox3;
-    private javax.swing.JFileChooser jFileChooser;
+    private javax.swing.JFileChooser jFileChooserSave;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
+    private javax.swing.JMenuItem jMenuItem5;
+    private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;

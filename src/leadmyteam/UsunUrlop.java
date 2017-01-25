@@ -96,7 +96,6 @@ public class UsunUrlop extends javax.swing.JFrame {
     }//GEN-LAST:event_UsunButtonActionPerformed
 
     private void anulujButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_anulujButtonActionPerformed
-        // TODO add your handling code here:
         this.dispose();
     }//GEN-LAST:event_anulujButtonActionPerformed
 

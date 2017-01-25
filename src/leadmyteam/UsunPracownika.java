@@ -95,7 +95,6 @@ public class UsunPracownika extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
  
     private void UsunButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UsunButtonActionPerformed
-        //TODO obsluga null
         leadMyTeam.sqlConn.UsunPracownika(pesel);
         leadMyTeam.OdswiezPracownikow();
         JOptionPane.showMessageDialog(this, "Usunięto pracownika "+pesel);
